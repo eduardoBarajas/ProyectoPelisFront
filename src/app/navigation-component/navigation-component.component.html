@@ -1,0 +1,55 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+        [mode]="(isHandset$ | async) ? 'over' : 'push'"
+        [opened]="!(isHandset$ | async) ? false : false">
+      <mat-toolbar>
+        Menu
+      </mat-toolbar>
+      <mat-nav-list>
+        <!--
+        <a mat-list-item (click)="drawer.toggle()" *ngFor="let link of links"
+            [routerLink]="link"
+            (click)="activeLink = link"
+            [routerLinkActive]="'opcionSeleccionada'"> {{link.split('/')[0]}} </a>
+        <button class="mx-2 my-2" mat-raised-button (click)="drawer.toggle()" routerLink="/Login" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && !sesion_initiated">Iniciar Sesion</button>
+        <button class="mx-2 my-2" mat-raised-button (click)="cerrarSesion()" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && sesion_initiated">Cerrar Sesion</button>
+        -->
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar #toolbar color="primary" class="h-100 fixed-toolbar" [class.mat-elevation-z8]="true">
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        <span>
+          PeliculasDex
+        </span>
+        <!--
+        <span>
+          <img class="my-1" style="width:9vw;height:9vh;" src="/assets/Images/Logo.png" *ngIf="!(isHandset$ | async)">
+          <img class="my-1" style="width:32vw;height:9vh;margin-left:50%;" src="/assets/Images/Logo.png" *ngIf="isHandset$ | async">
+        </span>
+       
+        <nav *ngIf="!(isHandset$ | async)" mat-tab-nav-bar [backgroundColor]="background" layout-fill class="mx-4">
+          <a style="font-size:1.2rem;padding: 0 12px;min-width: 75px;" mat-tab-link *ngFor="let link of links"
+            [routerLink]="link"
+            (click)="activeLink = link"
+            [active]="activeLink == link"> {{link.split('/')[0]}} </a>
+          <button class="ml-5 my-2" mat-raised-button routerLink="/Login" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && !sesion_initiated">Iniciar Sesion</button>
+          <button class="ml-5 my-2" mat-raised-button (click)="cerrarSesion()" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && sesion_initiated">Cerrar Sesion</button>
+          
+        </nav>
+        -->
+      </mat-toolbar>
+      <!-- Add Content Here -->
+      <div [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''" style="margin-top: 10vh;">
+        <router-outlet #o="outlet"></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>

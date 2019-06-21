@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/purple-green.css";
+
+.success-snackbar {
+    background-color: #00863f!important;
+    color: white!important;
+    font-size: 1.3rem;
+  }
+  
+  .error-snackbar {
+    background-color: #F44336!important;
+    color: white!important;
+    font-size: 1.3rem;
+  }
