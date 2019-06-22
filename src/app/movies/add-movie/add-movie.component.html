@@ -21,7 +21,7 @@
             <div class="row">
               <div class="col-md-3" *ngFor="let field of movie_node_fields">
                 <mat-form-field>
-                  <input matInput [(ngModel)]="flatNodeMap.get(node)[field]"  placeholder="{{field}}">
+                  <input [disabled]="movie_node_blocked_fields.includes(field)" matInput [(ngModel)]="flatNodeMap.get(node)[field]"  placeholder="{{field}}">
                 </mat-form-field>
               </div>
             </div>

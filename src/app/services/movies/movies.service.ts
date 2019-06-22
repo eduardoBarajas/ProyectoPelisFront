@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Movie } from '../entities/Movie';
-import { IMovieList } from '../entities/IMovieList';
-import { IMovie } from '../entities/IMovie';
-import { IResponse } from '../entities/IResponse';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Movie } from 'src/app/entities/Movie';
+import { IMovie } from 'src/app/entities/IMovie';
+import { IResponse } from 'src/app/entities/IResponse';
+import { IMovieList } from 'src/app/entities/IMovieList';
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,8 @@ export class MoviesService {
 
   // serverApiUrl = 'http://localhost:8080/movies/';
 
+  apiUrl = 'http://localhost:8080/movies/';
+
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
@@ -25,11 +28,11 @@ export class MoviesService {
   constructor(private httpClient: HttpClient) { }
 
   saveMovie(movie: Movie) {
-    return this.httpClient.post('http://localhost:8080/movies/', movie, this.httpOptions);
+    return this.httpClient.post<IMovie>('http://localhost:8080/movies/', movie, this.httpOptions);
   }
 
   saveMovies(movies: Movie[]) {
-    return this.httpClient.post<IResponse>('http://localhost:8080/movies/saveAll', movies, this.httpOptions);
+    return this.httpClient.post<IResponse<IMovie>>(`${this.apiUrl}saveAll`, movies, this.httpOptions);
   }
 
   getMoviesFromMovieServer(year: number) {

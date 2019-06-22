@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import { Movie } from 'src/app/entities/Movie';
-import { MoviesService } from '../movies.service';
+import { IMovieLinks } from 'src/app/entities/IMovieLinks';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material';
+import { MoviesService } from 'src/app/services/movies/movies.service';
+import { LinksService } from 'src/app/services/links/links.service';
+import { MovieLinks } from 'src/app/entities/MovieLinks';
 
 interface TreeNode {
   name: string;
@@ -41,6 +44,8 @@ export class AddMovieComponent implements OnInit {
 // tslint:disable-next-line: variable-name
   movie_node_fields = ['name', 'originalName', 'synopsis', 'length', 'poster', 'tags', 'genres',
   'cast', 'year', 'modificationDate'];
+// tslint:disable-next-line: variable-name
+  movie_node_blocked_fields = ['name', 'year', 'modificationDate'];
   years = [];
 // tslint:disable-next-line: variable-name
   year_selected = 2019;
@@ -65,7 +70,7 @@ export class AddMovieComponent implements OnInit {
     return flatnode;
   }
 
-  constructor(private moviesService: MoviesService, private snackbar: MatSnackBar) {
+  constructor(private moviesService: MoviesService, private linksService: LinksService, private snackbar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -113,20 +118,53 @@ export class AddMovieComponent implements OnInit {
       movie.tags = movieNode.children[0].tags;
       movie.name = movieNode.children[0].name;
       movie.year = movieNode.children[0].year;
+      movie.modificationDate = movieNode.children[0].modificationDate;
       movies.push(movie);
     });
+    // con operation_finished se tendra un control de las dos operaciones que se realizan a continuacion,
+    // se usa la propiedad de message para ir concatenando los errores en caso de haber, y el time_visible para
+    // agrandar el tiempo de vista para que se pueda leer todo el mensaje.
+    const operation_finished = { status: true, message: '', time_visible: 3000};
     this.moviesService.saveMovies(movies).subscribe({
       next: (response => {
         if (response.status.includes('Success')) {
-          this.snackbar.open(response.message);
+          // se crea la lista que contendra todos los links de las peliculas que se agregaran.
+          const links_movies_list = Array<MovieLinks>();
+          response.responses.forEach( movie => {
+            this.TREE_DATA.forEach( node => {
+              // si el nombre de la pelicula en los nodos es igual a las peliculas recien agregadas se procede
+              // a obtener sus links para actualizarlos.
+              if (node.children[0].name.includes(movie.name)) {
+                node.children[0].movieLinks.forEach( link => {
+                  let movie_link = new MovieLinks();
+                  movie_link.idMovie = movie.idMovie;
+                  movie_link.link = link;
+                  links_movies_list.push(movie_link);
+                });
+              }
+            });
+          });
+          // en este punto ya se tienen los links de todas las peliculas que recien se agregaron
+          // y se mandan a la api para actualizarse.
+          this.linksService.saveMovieLinks(links_movies_list).subscribe({
+            next: (() => {
+              this.snackbar.open(response.message);
+            }),
+            error: ((linksError: HttpErrorResponse) => {
+              this.snackbar.open(`${operation_finished.message}, ${linksError.message}`, '', {
+                duration: operation_finished.time_visible, panelClass: ['error-snackbar']});
+            })
+          });
         } else {
-          this.snackbar.open(response.message, '', {
-            duration: 3000, panelClass: ['error-snackbar']});
+          operation_finished.status = false;
+          operation_finished.message = response.message;
+          operation_finished.time_visible += 1000;
         }
       }),
       error: ((error: HttpErrorResponse) => {
-        this.snackbar.open(error.message, '', {
-          duration: 3000, panelClass: ['error-snackbar']});
+        operation_finished.status = false;
+        operation_finished.message = `${operation_finished.message}, ${error.message}`;
+        operation_finished.time_visible += 1000;
       })
     });
   }
