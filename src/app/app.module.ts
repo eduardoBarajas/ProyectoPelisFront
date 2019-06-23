@@ -12,27 +12,41 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatButtonModule } from '@angular/material';
+import { MovieDialogComponent } from './dialogs/movie-dialog/movie-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationComponentComponent
+    NavigationComponentComponent,
+    MovieDialogComponent
   ],
   imports: [
     BrowserModule,
+    MoviesModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MoviesModule,
+    FormsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCheckboxModule,
     MatSnackBarModule,
+    MatFormFieldModule,
     MatSidenavModule,
     MatToolbarModule,
+    MatDialogModule,
     MatListModule,
     MatIconModule,
     MoviesRoutingModule,
     AppRoutingModule
   ],
   providers: [{provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3500, verticalPosition: 'bottom',
+  entryComponents: [
+    MovieDialogComponent
+  ],
   panelClass: ['success-snackbar']}}],
   bootstrap: [AppComponent]
 })

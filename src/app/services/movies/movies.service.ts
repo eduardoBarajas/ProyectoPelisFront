@@ -3,7 +3,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Movie } from 'src/app/entities/Movie';
 import { IMovie } from 'src/app/entities/IMovie';
 import { IResponse } from 'src/app/entities/IResponse';
-import { IMovieList } from 'src/app/entities/IMovieList';
+import { IServerMovieList } from 'src/app/entities/IServerMovieList';
 
 
 @Injectable({
@@ -27,15 +27,31 @@ export class MoviesService {
 
   constructor(private httpClient: HttpClient) { }
 
-  saveMovie(movie: Movie) {
+  save(movie: Movie) {
     return this.httpClient.post<IMovie>('http://localhost:8080/movies/', movie, this.httpOptions);
   }
 
-  saveMovies(movies: Movie[]) {
+  saveAll(movies: Movie[]) {
     return this.httpClient.post<IResponse<IMovie>>(`${this.apiUrl}saveAll`, movies, this.httpOptions);
   }
 
-  getMoviesFromMovieServer(year: number) {
-    return this.httpClient.get<IMovieList>(`${this.serverApiUrl}${year}`);
+  getAllFromMovieServer(year: number) {
+    return this.httpClient.get<IServerMovieList>(`${this.serverApiUrl}${year}`);
+  }
+
+  getAll() {
+    return this.httpClient.get(this.apiUrl);
+  }
+
+  findIfAlreadyInDBWithNameAndYear(name: string, year: number) {
+    return this.httpClient.get<IResponse<IMovie>>(`${this.apiUrl}/name=${name}/year=${year}`);
+  }
+
+  update(movie: Movie) {
+    return this.httpClient.put<IMovie>(`${this.apiUrl}`, movie, this.httpOptions);
+  }
+
+  deleteById(idMovie: number) {
+    return this.httpClient.delete<IMovie>(`${this.apiUrl}${idMovie}`);
   }
 }

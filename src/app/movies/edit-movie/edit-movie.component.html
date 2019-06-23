@@ -1,3 +1,89 @@
-<p>
-  edit-movie works!
-</p>
+<div class="container h-100">
+  <div class="row">
+    <div class="col-md-9 my-3">
+      <h5 class="widget_title">Peliculas</h5>
+    </div>
+    <div class="col-md-12 my-2">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{column}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element[column]}} </td>
+        </ng-container>
+  
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <div>
+                <div class="row">
+                  <div class="col-md-2">
+                    <img src="{{element.poster}}" alt="poster" class="img-thumbnail">
+                  </div>
+                  <div class="col-md-8 my-auto">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="row">
+                          <div class="col-md-10">
+                            <h6 class="widget_title">Cast</h6>
+                          </div>
+                          <div class="col-md-10">
+                            <p>{{element.cast}}</p>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-10">
+                            <h6 class="widget_title">Tags</h6>
+                          </div>
+                          <div class="col-md-10">
+                            <p>{{element.tags}}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="row">
+                          <div class="col-md-10">
+                            <h6 class="widget_title">Synopsis</h6>
+                          </div>
+                          <div class="col-md-10">
+                            <p>{{element.synopsis}}</p>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-10">
+                            <h6 class="widget_title">Original Name</h6>
+                          </div>
+                          <div class="col-md-10">
+                            <p>{{element.originalName}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <button class="w-100 my-4" mat-stroked-button color="accent" (click)="editMovie(element)">Editar</button>
+                      </div>
+                      <div class="col-md-12">
+                        <button class="w-100" mat-stroked-button color="accent" (click)="deleteMovie(element)">Eliminar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+            class="element-row"
+            [class.expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+      </table>
+    </div>
+  </div>
+</div>
+  

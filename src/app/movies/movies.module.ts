@@ -12,9 +12,11 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
+import {MatTableModule} from '@angular/material/table';
+import { MovieDialogComponent } from '../dialogs/movie-dialog/movie-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [MovieDetailsComponent, AddMovieComponent, EditMovieComponent, ListMoviesComponent, HomeMoviesComponent,
@@ -22,14 +24,18 @@ import {MatSelectModule} from '@angular/material/select';
   imports: [
     CommonModule,
     MatTreeModule,
+    FormsModule,
     MatIconModule,
     MatFormFieldModule,
     MatCheckboxModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule,
+    MatTableModule,
     MatButtonModule,
     MoviesRoutingModule
+  ],
+  entryComponents: [
+    MovieDialogComponent
   ],
   exports: [
     HomeMoviesComponent

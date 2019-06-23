@@ -46,6 +46,10 @@ export class AddMovieComponent implements OnInit {
   'cast', 'year', 'modificationDate'];
 // tslint:disable-next-line: variable-name
   movie_node_blocked_fields = ['name', 'year', 'modificationDate'];
+  // esta varible es la que determina si mostrar o no el spinner cuando se cargan las peliculas.
+  gettingMovies = false;
+  // esta variable determina si se muestra el spinner cuando se agregan las peliculas
+  uploadingMovies = false;
   years = [];
 // tslint:disable-next-line: variable-name
   year_selected = 2019;
@@ -94,6 +98,18 @@ export class AddMovieComponent implements OnInit {
       this.moviesSelected.delete(node);
     } else {
       this.moviesSelected.set(node, this.flatNodeMap.get(node));
+      this.moviesService.findIfAlreadyInDBWithNameAndYear(this.flatNodeMap.get(node).children[0].name,
+        this.flatNodeMap.get(node).children[0].year).subscribe({
+          next: (response => {
+            if (response.status === 'Success') {
+              this.snackbar.open(response.message);
+            }
+          }),
+          error: ((err: HttpErrorResponse) => {
+            this.snackbar.open(`${err.message}`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
+          })
+        });
     }
   }
 
@@ -104,6 +120,7 @@ export class AddMovieComponent implements OnInit {
         duration: 3000, panelClass: ['error-snackbar']});
       return;
     }
+    this.uploadingMovies = !this.uploadingMovies;
     const movies = [];
     this.moviesSelected.forEach( movieNode => {
       const movie = new Movie();
@@ -124,8 +141,7 @@ export class AddMovieComponent implements OnInit {
     // con operation_finished se tendra un control de las dos operaciones que se realizan a continuacion,
     // se usa la propiedad de message para ir concatenando los errores en caso de haber, y el time_visible para
     // agrandar el tiempo de vista para que se pueda leer todo el mensaje.
-    const operation_finished = { status: true, message: '', time_visible: 3000};
-    this.moviesService.saveMovies(movies).subscribe({
+    this.moviesService.saveAll(movies).subscribe({
       next: (response => {
         if (response.status.includes('Success')) {
           // se crea la lista que contendra todos los links de las peliculas que se agregaran.
@@ -148,23 +164,25 @@ export class AddMovieComponent implements OnInit {
           // y se mandan a la api para actualizarse.
           this.linksService.saveMovieLinks(links_movies_list).subscribe({
             next: (() => {
+              this.uploadingMovies = !this.uploadingMovies;
               this.snackbar.open(response.message);
             }),
             error: ((linksError: HttpErrorResponse) => {
-              this.snackbar.open(`${operation_finished.message}, ${linksError.message}`, '', {
-                duration: operation_finished.time_visible, panelClass: ['error-snackbar']});
+              this.uploadingMovies = !this.uploadingMovies;
+              this.snackbar.open(`${linksError.message}`, '', {
+                duration: 3500, panelClass: ['error-snackbar']});
             })
           });
         } else {
-          operation_finished.status = false;
-          operation_finished.message = response.message;
-          operation_finished.time_visible += 1000;
+          this.snackbar.open(`${response.message}`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
+          this.uploadingMovies = !this.uploadingMovies;
         }
       }),
       error: ((error: HttpErrorResponse) => {
-        operation_finished.status = false;
-        operation_finished.message = `${operation_finished.message}, ${error.message}`;
-        operation_finished.time_visible += 1000;
+        this.snackbar.open(`${error.message}`, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+        this.uploadingMovies = !this.uploadingMovies;
       })
     });
   }
@@ -175,7 +193,8 @@ export class AddMovieComponent implements OnInit {
     las peliculas.
   */
   yearSelected() {
-    this.moviesService.getMoviesFromMovieServer(this.year_selected).subscribe({
+    this.gettingMovies = !this.gettingMovies;
+    this.moviesService.getAllFromMovieServer(this.year_selected).subscribe({
         next: (response => {
           if (response.status.includes('Success')) {
             this.TREE_DATA = [];
@@ -201,13 +220,16 @@ export class AddMovieComponent implements OnInit {
             });
             this.dataSource.data = this.TREE_DATA;
             this.moviesSelected.clear();
+            this.gettingMovies = !this.gettingMovies;
             this.snackbar.open(response.message);
           } else {
+            this.gettingMovies = !this.gettingMovies;
             this.snackbar.open(response.message, '', {
               duration: 3000, panelClass: ['error-snackbar']});
           }
         }),
         error: ((error: HttpErrorResponse) => {
+          this.gettingMovies = !this.gettingMovies;
           this.snackbar.open(error.message, '', {
             duration: 3000, panelClass: ['error-snackbar']});
         })

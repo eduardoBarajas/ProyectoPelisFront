@@ -1,0 +1,5 @@
+/*Este estilo corrige el scrollbar del textarea que aparece cuando aun no se cumple el maximo de lineas*/
+textarea.mat-input-element {
+    padding: 0;
+    margin: 0;
+}

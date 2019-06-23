@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>Detalles De La Pelicula</h2>
+<mat-dialog-content class="scrollbar-success mat-typography">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{{movie.poster}}" alt="poster" class="img-thumbnail">
+      </div>
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input [disabled]="!operation.includes('ADD')" [ngModel]="movie.name" matInput placeholder="Nombre de la pelicula">
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Nombre Original</mat-label>
+              <input [disabled]="operation.includes('DELETE')" [(ngModel)]="movie.originalName" matInput placeholder="Nombre original de la pelicula">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>URI Poster</mat-label>
+          <input [disabled]="operation.includes('DELETE')" [(ngModel)]="movie.poster" matInput placeholder="http://sitio.de.tu.imagen.com">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Sinopsis</mat-label>
+          <textarea [disabled]="operation.includes('DELETE')"
+          class="scrollbar-success"
+            [(ngModel)]="movie.synopsis" matInput placeholder="EJ. Sinopsis de la pelicula"
+            cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5">
+          </textarea>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Tags</mat-label>
+          <input [disabled]="operation.includes('DELETE')" [(ngModel)]="movie.tags" matInput placeholder="Tags de la pelicula">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Reparto</mat-label>
+          <input [disabled]="operation.includes('DELETE')" [(ngModel)]="movie.cast" matInput placeholder="Actores de la pelicula">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Generos</mat-label>
+          <input [disabled]="operation.includes('DELETE')" [(ngModel)]="movie.genres" matInput placeholder="Generos de la pelicula">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Duracion</mat-label>
+          <input [disabled]="operation.includes('DELETE')" [(ngModel)]="movie.length" matInput placeholder="Duracion de la pelicula">
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <div class="col-md-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Rating</mat-label>
+            <input [disabled]="operation.includes('DELETE')" [(ngModel)]="movie.grade" matInput placeholder="Rating de la pelicula">
+          </mat-form-field>
+        </div>
+      </div>  
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="mt-2">
+    <mat-checkbox [(ngModel)]="checked" class="mx-2">Confirmar Cambios</mat-checkbox>
+  <button mat-flat-button color="warn" mat-dialog-close class="mx-2" (click)="clickCancelar()">Cancelar</button>
+  <button mat-flat-button color="primary" cdkFocusInitial class="mx-2" (click)="clickAceptar()">Aceptar</button>
+</mat-dialog-actions>

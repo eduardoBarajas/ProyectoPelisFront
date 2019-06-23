@@ -1,6 +1,6 @@
 import { IMovie } from './IMovie';
 
-export interface IMovieList {
+export interface IServerMovieList {
     status: string;
     message: string;
     year: string;
