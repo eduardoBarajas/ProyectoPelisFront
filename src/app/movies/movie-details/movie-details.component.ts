@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material';
 import { LinksService } from 'src/app/services/links/links.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { filter } from 'rxjs/operators';
+import { Review } from '../../entities/Review';
 
 @Component({
   selector: 'app-movie-details',
@@ -21,6 +22,10 @@ export class MovieDetailsComponent implements OnInit {
   movieLinksKeys = [];
   movieOptionSelected = '';
   similarMovies: Movie[] = [];
+  review = new Review();
+
+  // recordatorio hacer una tabla en la base de datos para que esto no sea estatico.
+  blockedSites = ['divload', 'mangoplay', 'stream78'];
 
   constructor(private movieService: MoviesService, private activatedRoute: ActivatedRoute, private snackbar: MatSnackBar,
     private linkService: LinksService, private sanitazer: DomSanitizer, private router: Router) { }
@@ -49,8 +54,16 @@ export class MovieDetailsComponent implements OnInit {
         console.log(responseLinks);
         if (responseLinks['_embedded'] != null) {
           responseLinks['_embedded']['movieLinksDTOList'].forEach( movieLink => {
-            this.movieLinks.set(movieLink.link, this.sanitazer.bypassSecurityTrustResourceUrl(movieLink.link));
-            this.movieLinksKeys.push(movieLink.link);
+            let block = false;
+            this.blockedSites.forEach( blocked => {
+              if (movieLink.link.includes(blocked)) {
+                block = true;
+              }
+            });
+            if (!block) {
+              this.movieLinks.set(movieLink.link, this.sanitazer.bypassSecurityTrustResourceUrl(movieLink.link));
+              this.movieLinksKeys.push(movieLink.link);
+            }
           });
           if (this.movieLinks.size > 0) {
             this.movieOptionSelected = this.movieLinksKeys[0];
@@ -89,6 +102,10 @@ export class MovieDetailsComponent implements OnInit {
           duration: 3500, panelClass: ['error-snackbar']});
       });
     });
+  }
+
+  publishReview() {
+    console.log(this.review);
   }
 
 }

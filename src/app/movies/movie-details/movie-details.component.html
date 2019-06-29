@@ -75,8 +75,9 @@
           </div>
           <!-- end player -->
           <ng-template #NoLinks>
-            <div class="col-12 col-xl-6 movie-player">
-              LOOOOOOOOOOOOOL
+            <div class="col-12 col-xl-6 movie-player text-center">
+              <img class="img-fluid" src="assets/img/Movie-Studio-icon.png" />
+              <p class="display-3 mx-4" style="font-size: 1.5rem;">No se encontraron provedores de la pelicula.</p>
             </div>
           </ng-template>
         </div>
@@ -286,14 +287,19 @@
                         </li>
                       </ul>
   
-                      <form action="#" class="form">
-                        <input type="text" class="form__input" placeholder="Title">
-                        <textarea class="form__textarea" placeholder="Review"></textarea>
-                        <div class="form__slider">
-                          <div class="form__slider-rating" id="slider__rating"></div>
-                          <div class="form__slider-value" id="form__slider-value"></div>
-                        </div>
-                        <button type="button" class="form__btn">Send</button>
+                      <form class="form">
+                        <input type="text" class="form__input" [(ngModel)]="review.reviewTitle" placeholder="Title" [ngModelOptions]="{standalone: true}">
+                        <textarea class="form__textarea" [(ngModel)]="review.review" placeholder="Review" [ngModelOptions]="{standalone: true}"></textarea>
+                        <mat-label >Rating</mat-label>
+                          <mat-slider class="w-50"
+                            [max]="5"
+                            [min]="0"
+                            [step]="0.1"
+                            [thumbLabel]="true"
+                            [(ngModel)]="review.grade" 
+                            [ngModelOptions]="{standalone: true}">
+                        </mat-slider>
+                        <button mat-flat-button color="primary" cdkFocusInitial class="mx-2" (click)="publishReview()">Publicar</button>
                       </form>
                     </div>
                   </div>
