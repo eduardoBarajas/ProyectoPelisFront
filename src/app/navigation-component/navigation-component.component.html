@@ -17,8 +17,9 @@
         -->
       </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content>
-      <mat-toolbar #toolbar color="primary" class="h-100 fixed-toolbar" [class.mat-elevation-z8]="true">
+    <!-- Se usa el overflow: hidden para que se oculte la diferencia de tamanios-->
+    <mat-sidenav-content style="overflow: hidden;background-color: rgba(0, 0, 0, 0);">
+      <mat-toolbar #toolbar color="primary" class="fixed-toolbar" [class.mat-elevation-z8]="true">
         <button
           type="button"
           aria-label="Toggle sidenav"
@@ -28,7 +29,7 @@
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
         <span>
-          PeliculasDex
+          <a [routerLink]="['/']" routerLinkActive="router-link-active" >PeliculasDex</a>
         </span>
         <!--
         <span>
@@ -46,10 +47,13 @@
           
         </nav>
         -->
+        <button class="mx-5" mat-raised-button routerLink="/add" color="primary">Agregar Peliculas</button>
+        <button class="ml-5" mat-raised-button routerLink="/edit" color="primary">Editar Peliculas</button>
+        <button class="ml-5" mat-raised-button routerLink="/catalog" color="primary">Catalogo</button>
       </mat-toolbar>
       <!-- Add Content Here -->
-      <div [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''" style="margin-top: 10vh;">
-        <router-outlet #o="outlet"></router-outlet>
+      <div [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''" style="margin-top: 5vh;">
+        <router-outlet #o="outlet" class="home--bg" ></router-outlet>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

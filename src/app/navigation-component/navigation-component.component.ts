@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { query, trigger, state, style, transition, animate } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
+import { RouterEvent, Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-navigation-component',
@@ -47,5 +48,4 @@ export class NavigationComponentComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

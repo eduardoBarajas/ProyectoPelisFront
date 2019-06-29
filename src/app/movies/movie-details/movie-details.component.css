@@ -1,0 +1,52 @@
+.movie-player {
+    z-index: 2;
+}
+
+.btn_movie_action {
+    width: 100%!important;;
+}
+
+.description_size {
+    max-height: 30vh;
+    overflow:auto;
+}
+
+  @media (min-width: 360px) {
+    .btn_movie_action {
+        width: 75%!important;;
+    }
+  }
+  
+  @media (min-width: 576px) {
+    .btn_movie_action {
+        width: 100%!important;
+        font-size: xx-small;
+    }
+  }
+  @media (min-width: 768px) {
+    .btn_movie_action {
+        width: 100%!important;;
+    }
+    .description_size {
+        max-height: 20vh;
+        overflow:auto;
+    }
+  }
+  @media (min-width: 1024px) {
+    .btn_movie_action {
+        width: 100%!important;;
+    }
+    .description_size {
+        max-height: 15vh;
+        overflow:auto;
+    }
+  }
+  @media (min-width: 1200px) {
+    .btn_movie_action {
+        width: 100%!important;;
+    }
+    .description_size {
+        max-height: 30vh;
+        overflow:auto;
+    }
+  }

@@ -1,9 +1,10 @@
-<div class="container h-100">
+<mat-spinner style="position: fixed; left: 45%;top: 45%;" *ngIf="!loaded"></mat-spinner>
+<div class="container h-100" [ngClass]="{'invisible': !loaded}">
   <div class="row">
-    <div class="col-md-9 my-3">
+    <div class="col-md-9 my-4">
       <h5 class="widget_title">Peliculas</h5>
     </div>
-    <div class="col-md-12 my-2">
+    <div class="col-md-12 my-4 mat-elevation-z8">
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
         <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
           <th mat-header-cell *matHeaderCellDef class="text-center"> {{column}} </th>
@@ -83,6 +84,7 @@
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
       </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
 </div>

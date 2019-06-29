@@ -1,0 +1,82 @@
+.img-thumbnail {
+  max-width: 50vw;
+  min-width: 17vw;
+  height: 45vh;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  visibility: hidden;
+  width: 12px;
+  background-color: #F5F5F5; }
+
+.option {
+  animation-name: paint-in-anim;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+.option:hover {
+  animation-name: paint-out-anim;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+@keyframes paint-out-anim {
+  0%   {
+  font-size: 1rem;
+  color: #ffc107;
+  }
+  100%   {
+  font-size: 1.2rem;
+  color: #ff5722;
+  }
+}
+
+@keyframes paint-in-anim {
+  0%   {
+  font-size: 1.2rem;
+  color: #ff5722;
+  }
+  100%   {
+  font-size: 1rem;
+  color: whitesmoke;
+  }
+}
+
+.movie-item {
+  width: 25vh;
+}
+
+.movie-carousel {
+  max-height: 350px;
+}
+
+@media (min-width: 360px) {
+  .movie-carousel {
+    max-height: 330px;
+  }
+}
+
+@media (min-width: 576px) {
+  .movie-carousel {
+    max-height: 360px;
+  }
+}
+@media (min-width: 768px) {
+  .movie-carousel {
+    max-height: 380px;
+  }
+}
+@media (min-width: 1200px) {
+  .movie-carousel {
+    max-height: 400px;
+  }
+}

@@ -5,13 +5,13 @@ import { AppComponent } from './app.component';
 import { HomeMoviesComponent } from './movies/home-movies/home-movies.component';
 
 const routes: Routes = [
-  { path: '', component: HomeMoviesComponent }
+  { path: '', component: HomeMoviesComponent },
 ];
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'})
   ],
   exports: [ RouterModule ]
 })

@@ -22,7 +22,7 @@ export class LinksService {
   }
 
   getMovieLinksFromMovie(idMovie: number) {
-    return this.httpClient.get<IResponse<IMovieLinks>>(`${this.apiUrl}movie/${idMovie}`);
+    return this.httpClient.get(`${this.apiUrl}movie/${idMovie}`);
   }
 
   deleteLinksFromMovie(idMovie: number) {

@@ -40,7 +40,7 @@ interface IMovieNode {
   styleUrls: ['./add-movie.component.css']
 })
 export class AddMovieComponent implements OnInit {
-
+  loaded = false;
 // tslint:disable-next-line: variable-name
   movie_node_fields = ['name', 'originalName', 'synopsis', 'length', 'poster', 'tags', 'genres',
   'cast', 'year', 'modificationDate'];
@@ -57,6 +57,7 @@ export class AddMovieComponent implements OnInit {
 
   // el siguiente map es utilizado para tener una referencia del nodo, utilizando el nodo anidado como key.
   flatNodeMap = new Map<FlatNode, TreeNode>();
+  treeNodeMap = new Map<TreeNode, FlatNode>();
   // moviesSelected es un Map donde se almacenaran todas las peliculas que sean elegidas en la lista de checkbox.
   moviesSelected = new Map<FlatNode, TreeNode>();
   // Estos controles son utilizados para configurar la vista de arbol.
@@ -70,6 +71,7 @@ export class AddMovieComponent implements OnInit {
       name: node.name,
       level: nivel
     }
+    this.treeNodeMap.set(node, flatnode);
     this.flatNodeMap.set(flatnode, node);
     return flatnode;
   }
@@ -82,9 +84,11 @@ export class AddMovieComponent implements OnInit {
       node => node.expandable);
     this.treeFlattener = new MatTreeFlattener(this.transformer, node => node.level, node => node.expandable, node => node.children);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    // items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
     for (let i = 1925; i <= 2019; i++) {
       this.years.push(i);
     }
+    this.loaded = true;
   }
 
   hasChild = (_: number, node: FlatNode) => node.expandable;
@@ -234,5 +238,29 @@ export class AddMovieComponent implements OnInit {
             duration: 3000, panelClass: ['error-snackbar']});
         })
      });
+  }
+
+  selectAll() {
+    let messageShown = false;
+    this.dataSource.data.forEach( node => {
+      this.moviesService.findIfAlreadyInDBWithNameAndYear(node.children[0].name, node.children[0].year).subscribe({
+        next: (response => {
+          if (response.status === 'Success') {
+            if (!messageShown) {
+              this.snackbar.open('Algunas peliculas ya estaban en la base de datos, si quieres sobrescribirlas eligelas manualmente.', '', {
+                duration: 3500, panelClass: ['error-snackbar']});
+              messageShown = !messageShown;
+            }
+          } else {
+            this.moviesSelected.set(this.treeNodeMap.get(node), node);
+          }
+          console.log(response);
+        }),
+        error: ((err: HttpErrorResponse) => {
+          this.snackbar.open(`${err.message}`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
+        })
+      });
+    });
   }
 }

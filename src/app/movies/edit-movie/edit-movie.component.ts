@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { MatTableDataSource, MatSnackBar, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatSnackBar, MatDialog, MatPaginator } from '@angular/material';
 import { Movie } from 'src/app/entities/Movie';
 import { IMovie } from 'src/app/entities/IMovie';
 import { MoviesService } from 'src/app/services/movies/movies.service';
@@ -23,9 +23,12 @@ import { LinksService } from 'src/app/services/links/links.service';
 })
 export class EditMovieComponent implements OnInit {
 
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
   dataSource: MatTableDataSource<IMovie>;
   columnsToDisplay = ['idMovie', 'name', 'year', 'grade', 'length', 'genres', 'modificationDate'];
   expandedElement: IMovie | null;
+  loaded = false;
 
   constructor(private moviesService: MoviesService, private snackbar: MatSnackBar, private dialog: MatDialog,
     private linksService: LinksService) { }
@@ -33,9 +36,11 @@ export class EditMovieComponent implements OnInit {
   ngOnInit() {
     this.moviesService.getAll().subscribe( {
       next: (movies => {
-        console.log(movies);
-        if (movies !== {}) {
+        // checar esta comparacion, no sirve bien
+        if (movies['_embedded'] != null) {
           this.dataSource = new MatTableDataSource(movies['_embedded']['movieDTOList']);
+          this.dataSource.paginator = this.paginator;
+          this.loaded = true;
         } else {
           this.snackbar.open(`No hay peliculas almacenadas en el sistema.`, '', {
             duration: 3500, panelClass: ['error-snackbar']});
@@ -55,15 +60,14 @@ export class EditMovieComponent implements OnInit {
     movieDialog.afterClosed().subscribe( (movie: Movie) => {
       if (movie != null) {
         /*
-
-
           CREO QUE ESTO DE BORRAR CON DOBLE LLAMADA A LA API ESTA DE MAS, 
           DEBERIA INVESTIGAR SI ES VIABLE UTILIZANDO UN TRIGGER O CON LA ELIMINACION CON CASCADA
-
-
         */
         this.moviesService.deleteById(movie.idMovie).subscribe( responseDelete => {
           this.snackbar.open(`${responseDelete.message}`);
+          this.dataSource.data.splice(this.dataSource.data.indexOf(mov), 1);
+          this.dataSource = new MatTableDataSource(this.dataSource.data);
+          this.dataSource.paginator = this.paginator;
         }, (error: HttpErrorResponse) => {
           this.snackbar.open(`${error.message}`, '', {
             duration: 3500, panelClass: ['error-snackbar']});
@@ -83,8 +87,6 @@ export class EditMovieComponent implements OnInit {
           next: (response => {
             if (response.status === 'Success') {
               assignIMovieToIMovie(response, mov);
-              /*this.dataSource.data.splice(this.dataSource.data.indexOf(mov), 1, movie);
-              this.dataSource = new MatTableDataSource(this.dataSource.data);*/
               this.snackbar.open(`${response.message}`);
             } else {
               this.snackbar.open(`${response.message}`, '', {

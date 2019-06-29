@@ -17,6 +17,8 @@ import { MovieDialogComponent } from './dialogs/movie-dialog/movie-dialog.compon
 import {MatDialogModule} from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { GestureConfig } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
   ],
   imports: [
     BrowserModule,
-    MoviesModule,
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
@@ -40,10 +41,12 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatDialogModule,
     MatListModule,
     MatIconModule,
+    MoviesModule,
     MoviesRoutingModule,
     AppRoutingModule
   ],
-  providers: [{provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3500, verticalPosition: 'bottom',
+  providers: [{provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3500, verticalPosition: 'bottom',
   entryComponents: [
     MovieDialogComponent
   ],

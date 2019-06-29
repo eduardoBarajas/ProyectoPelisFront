@@ -43,8 +43,34 @@ export class MoviesService {
     return this.httpClient.get(this.apiUrl);
   }
 
+  getById(idMovie: number) {
+    return this.httpClient.get<IMovie>(`${this.apiUrl}${idMovie}`);
+  }
+
+  getGenresList() {
+    return this.httpClient.get<IResponse<string>>(`${this.apiUrl}getAllGenres`);
+  }
+
+  getAllByFilter(genre: string, startYear: number, endYear: number, startRating: number, endRating: number) {
+    return this.httpClient.get(`${this.apiUrl}genre=${genre}/yearStart=${startYear}/yearEnd=${endYear}/ratingStart=${startRating}` +
+      `/ratingEnd=${endRating}`);
+  }
+
+  getAllByGenre(genre: string) {
+
+    console.log(genre);
+    return this.httpClient.get(`${this.apiUrl}genre=${encodeURIComponent(genre)}`);
+  }
+
+  getAllByYear(year: number) {
+    return this.httpClient.get(`${this.apiUrl}year=${year}`);
+  }
+
   findIfAlreadyInDBWithNameAndYear(name: string, year: number) {
-    return this.httpClient.get<IResponse<IMovie>>(`${this.apiUrl}/name=${name}/year=${year}`);
+    if (name.includes('/')) {
+      name = name.replace('/', '-slash-');
+    }
+    return this.httpClient.get<IResponse<IMovie>>(`${this.apiUrl}name=${encodeURIComponent(name)}/year=${year}`);
   }
 
   update(movie: Movie) {

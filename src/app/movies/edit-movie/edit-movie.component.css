@@ -5,7 +5,11 @@ table {
 th {
     font-size: 1.1rem;
     text-align: center;
-  }
+    background-color: #4CAF50;
+    color: white;
+}
+
+
 
 tr.detail-row {
     height: 0;

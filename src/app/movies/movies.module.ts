@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MovieDetailsComponent } from './movie-details/movie-details.component';
 import { AddMovieComponent } from './add-movie/add-movie.component';
 import { EditMovieComponent } from './edit-movie/edit-movie.component';
-import { ListMoviesComponent } from './list-movies/list-movies.component';
 import { HomeMoviesComponent } from './home-movies/home-movies.component';
 import { SearchMoviesComponent } from './search-movies/search-movies.component';
 import { MoviesRoutingModule } from './movies-routing.module';
@@ -17,20 +16,35 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatTableModule} from '@angular/material/table';
 import { MovieDialogComponent } from '../dialogs/movie-dialog/movie-dialog.component';
 import { FormsModule } from '@angular/forms';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { CatalogComponent } from './catalog/catalog.component';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
-  declarations: [MovieDetailsComponent, AddMovieComponent, EditMovieComponent, ListMoviesComponent, HomeMoviesComponent,
-    SearchMoviesComponent],
+  declarations: [MovieDetailsComponent, AddMovieComponent, EditMovieComponent, HomeMoviesComponent,
+    SearchMoviesComponent, CatalogComponent],
   imports: [
     CommonModule,
     MatTreeModule,
     FormsModule,
     MatIconModule,
     MatFormFieldModule,
+    MatToolbarModule,
+    MatDividerModule,
     MatCheckboxModule,
     MatInputModule,
     MatSelectModule,
     MatTableModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatExpansionModule,
+    ScrollingModule,
+    MatSliderModule,
     MatButtonModule,
     MoviesRoutingModule
   ],
