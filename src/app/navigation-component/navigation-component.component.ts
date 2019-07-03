@@ -3,7 +3,9 @@ import { query, trigger, state, style, transition, animate } from '@angular/anim
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { RouterEvent, Router, NavigationEnd } from '@angular/router';
+import { RouterEvent, Router, NavigationEnd, NavigationStart } from '@angular/router';
+import { AuthService } from '../services/auth/auth.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-navigation-component',
@@ -39,13 +41,39 @@ import { RouterEvent, Router, NavigationEnd } from '@angular/router';
 })
 export class NavigationComponentComponent implements OnInit {
 
+  adminLinks = false;
+  loginBtn = true;
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private route: Router,
+    private snackbar: MatSnackBar) {}
 
   ngOnInit(): void {
+    this.route.events.pipe(
+      filter( e => e instanceof NavigationEnd || e instanceof NavigationStart)
+    ).subscribe( () => {
+      if (this.authService.checkIfTokenIsValid()) {
+        if (localStorage.getItem('authority').includes('1')) {
+          this.adminLinks = true;
+        } else {
+          this.adminLinks = false;
+        }
+        this.loginBtn = false;
+      } else {
+        this.loginBtn = true;
+      }
+    });
+  }
+
+  logOut() {
+    localStorage.clear();
+    this.adminLinks = false;
+    this.loginBtn = true;
+    this.snackbar.open('Se cerro la session');
+    this.route.navigate(['/']);
   }
 }

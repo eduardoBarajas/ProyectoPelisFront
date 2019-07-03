@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MoviesModule } from './movies/movies.module';
 import { MoviesRoutingModule } from './movies/movies-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NavigationComponentComponent } from './navigation-component/navigation-component.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -19,6 +19,8 @@ import { FormsModule } from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { GestureConfig } from '@angular/material';
+import { AuthModule } from './auth/auth.module';
+import { HttpConfigInterceptor } from './Interceptors/httpconfig.interceptor';
 
 @NgModule({
   declarations: [
@@ -43,9 +45,11 @@ import { GestureConfig } from '@angular/material';
     MatIconModule,
     MoviesModule,
     MoviesRoutingModule,
+    AuthModule,
     AppRoutingModule
   ],
   providers: [{provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig},
+    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3500, verticalPosition: 'bottom',
   entryComponents: [
     MovieDialogComponent

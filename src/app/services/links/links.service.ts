@@ -9,7 +9,7 @@ import { MovieLinks } from 'src/app/entities/MovieLinks';
 })
 export class LinksService {
 
-  apiUrl = 'http://localhost:8080/links/';
+  apiUrl = 'http://localhost:8080/';
 
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -18,14 +18,14 @@ export class LinksService {
   constructor(private httpClient: HttpClient) { }
 
   saveMovieLinks(links: MovieLinks[]) {
-    return this.httpClient.post(`${this.apiUrl}movies/`, links, this.httpOptions);
+    return this.httpClient.post(`${this.apiUrl}admin/links/movies/`, links, this.httpOptions);
   }
 
   getMovieLinksFromMovie(idMovie: number) {
-    return this.httpClient.get(`${this.apiUrl}movie/${idMovie}`);
+    return this.httpClient.get(`${this.apiUrl}links/movie/${idMovie}`);
   }
 
   deleteLinksFromMovie(idMovie: number) {
-    return this.httpClient.delete(`${this.apiUrl}movie/${idMovie}`);
+   return this.httpClient.delete(`${this.apiUrl}admin/links/movie/${idMovie}`, this.httpOptions);
   }
 }

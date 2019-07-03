@@ -47,9 +47,11 @@
           
         </nav>
         -->
-        <button class="mx-5" mat-raised-button routerLink="/add" color="primary">Agregar Peliculas</button>
-        <button class="ml-5" mat-raised-button routerLink="/edit" color="primary">Editar Peliculas</button>
+        <button *ngIf="adminLinks" class="mx-5" mat-raised-button routerLink="/add" color="primary">Agregar Peliculas</button>
+        <button *ngIf="adminLinks" class="ml-5" mat-raised-button routerLink="/edit" color="primary">Editar Peliculas</button>
         <button class="ml-5" mat-raised-button routerLink="/catalog" color="primary">Catalogo</button>
+        <button *ngIf="!loginBtn" class="ml-5" mat-raised-button (click)="logOut()" color="accent">Cerrar Session</button>
+        <button *ngIf="loginBtn" class="ml-5" mat-raised-button routerLink="/login" color="accent">Iniciar Session</button>
       </mat-toolbar>
       <!-- Add Content Here -->
       <div [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''" style="margin-top: 5vh;">
