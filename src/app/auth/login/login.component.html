@@ -1,3 +1,43 @@
-<p>
-  login works!
-</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="sign">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="sign__content">
+                <!-- authorization form -->
+                <form class="sign__form">
+                  <a href="index.html" class="sign__logo">
+                    <h1>Peliculas Dex</h1>
+                  </a>
+    
+                  <div class="sign__group">
+                    <input [(ngModel)]="username" [ngModelOptions]="{standalone: true}" type="text" class="sign__input" placeholder="Usuario">
+                  </div>
+    
+                  <div class="sign__group">
+                    <input [(ngModel)]="pass" [ngModelOptions]="{standalone: true}" type="password" class="sign__input" placeholder="Password">
+                  </div>
+    
+                  <div class="sign__group sign__group--checkbox">
+                    <input id="remember" name="remember" type="checkbox" checked="checked">
+                    <label for="remember">Recordarme</label>
+                  </div>
+                  
+                  <button class="sign__btn" (click)="login()" type="button">Entrar</button>
+    
+                  <span class="sign__text">No Tienes Cuenta? <a href="signup.html">Registrate!</a></span>
+    
+                  <span class="sign__text"><a href="#">Olvidaste La Contrasena?</a></span>
+                </form>
+                <!-- end authorization form -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>"
