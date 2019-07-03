@@ -12,15 +12,15 @@ export class ReviewsService {
   };
   constructor(private httpClient: HttpClient) { }
   save(review: Review) {
-    return this.httpClient.post<IReview>('http://localhost:8080/Reviews/', review, this.httpOptions);
+    return this.httpClient.post<IReview>('http://localhost:8080/reviews/', review, this.httpOptions);
   }
   getAllByIdMovie(idMovie: number) {
     return this.httpClient.get(`${this.apiUrl}movie/${idMovie}`);
   }
   update(review: Review) {
-    return this.httpClient.put<IReview>(`${this.apiUrl}${review.idReview}`, Review, this.httpOptions);
+    return this.httpClient.put<IReview>(`${this.apiUrl}movie/review/${review.idReview}`, review, this.httpOptions);
   }
   deleteById(idReview: number) {
-    return this.httpClient.delete<IReview>(`${this.apiUrl}${idReview}`);
+    return this.httpClient.delete<IReview>(`${this.apiUrl}movie/review/${idReview}`);
   }
 }

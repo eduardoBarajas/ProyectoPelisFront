@@ -3,7 +3,8 @@ export interface IReview {
     grade: number;
 	review: string;
     publishedDate: string;
-	publishedTime: string;
+    publishedTime: string;
+    username: string;
 	reviewTitle: string;
     idUser: number;
     idMovie: number;
