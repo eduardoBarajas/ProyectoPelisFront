@@ -3,7 +3,8 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { IMovieLinks } from 'src/app/entities/IMovieLinks';
 import { IResponse } from 'src/app/entities/IResponse';
 import { MovieLinks } from 'src/app/entities/MovieLinks';
-import { environment } from 'src/environments/environment.prod';
+// import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'

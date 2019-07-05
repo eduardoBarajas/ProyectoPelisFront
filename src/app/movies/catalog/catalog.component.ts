@@ -20,26 +20,15 @@ export class CatalogComponent implements OnInit {
   fadeInAnimation = false;
   fadeInUpAnimation = false;
   inFilterSearch = false;
+  genresListObtained = false;
   filterData = {genre: '', startYear: 0, endYear: 2019, startRating: 0, endRating: 5};
 
   constructor(public movieService: MoviesService, private snackbar: MatSnackBar) { }
 
   ngOnInit() {
-    this.movieService.getGenresList().subscribe( response => {
-      if (response.status.includes('Success')) {
-        this.genresList.push('Todos');
-        response.responses.forEach( genre => {
-          this.genresList.push(genre);
-        });
-      } else {
-        this.snackbar.open(`${response.message}`, '', {
-          duration: 3500, panelClass: ['error-snackbar']});
-      }
-    }, (error: HttpErrorResponse) => {
-      this.snackbar.open(`${error.message}`, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-    });
-    this.movieService.getAllByYear(2019).subscribe( newMovies => {
+    this.filterData = {genre: 'Todos', startYear: 2019, endYear: 2019, startRating: 0, endRating: 5};
+    this.getMoviesByFilter();
+    /*this.movieService.getAllByYear(2019).subscribe( newMovies => {
       if (newMovies['_embedded'] != null) {
         this.movieList = newMovies['_embedded']['movieDTOList'];
         this.setPageEvent(this.movieList);
@@ -51,7 +40,7 @@ export class CatalogComponent implements OnInit {
     }, (err: HttpErrorResponse) => {
       this.snackbar.open(`${err.message}`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
-    });
+    });*/
   }
 
   pageChange(page: PageEvent) {
@@ -89,7 +78,25 @@ export class CatalogComponent implements OnInit {
         this.filterData.startRating, this.filterData.endRating).subscribe( response => {
           if (response['_embedded'] != null) {
             this.movieList = response['_embedded']['movieDTOList'];
-            this.inFilterSearch = !this.inFilterSearch;
+            this.movieList.forEach( movie => {
+              const movieGenres = movie.genres.split(',').slice(0, movie.genres.split(',').length - 1);
+              let genres = `${this.filterData.genre},`;
+              if (this.filterData.genre.includes('Todos')) {
+                genres = `${movieGenres[Math.floor(Math.random() * movieGenres.length)]},`;
+              }
+              for (let x = 0; x < movieGenres.length; x++) {
+                const index = Math.floor(Math.random() * movieGenres.length);
+                if (!genres.includes(movieGenres[index]) && genres.split(',').length < 3) {
+                  genres += `${movieGenres[index]},`;
+                }
+              }
+              console.log(`BEFORE--------------------------Movie: ${movie.name}, Genres: ${movie.genres}`);
+              movie.genres = genres.slice(0, genres.length - 1);
+              console.log(`Movie: ${movie.name}, Genres: ${movie.genres}`);
+            });
+            if (this.genresListObtained) {
+              this.inFilterSearch = !this.inFilterSearch;
+            }
             this.setPageEvent(this.movieList);
             this.paginator.firstPage();
             this.pageChange(this.pageEvent);
@@ -146,15 +153,28 @@ export class CatalogComponent implements OnInit {
     return validFilter;
   }
 
-  getMovieGenres(genres: string) {
-    const genresList = genres.split(',').slice(0, genres.split(',').length - 1);
-    const returnedGenres = [];
-    for (let x = 0; x < genresList.length; x ++) {
-      const index = Math.floor(Math.random() * genresList.length);
-      if (!returnedGenres.includes(genresList[index]) && returnedGenres.length < 2) {
-        returnedGenres.push(genresList[index]);
+  getGenresList() {
+    this.movieService.getGenresList().subscribe( response => {
+      if (response.status.includes('Success')) {
+        this.genresList.push('Todos');
+        response.responses.forEach( genre => {
+          this.genresList.push(genre);
+        });
+        this.genresListObtained = true;
+      } else {
+        this.snackbar.open(`${response.message}`, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
       }
+    }, (error: HttpErrorResponse) => {
+      this.snackbar.open(`${error.message}`, '', {
+        duration: 3500, panelClass: ['error-snackbar']});
+    });
+  }
+
+  filterOpened() {
+    this.inFilterSearch = !this.inFilterSearch;
+    if (!this.genresListObtained) {
+      this.getGenresList();
     }
-    return returnedGenres;
   }
 }

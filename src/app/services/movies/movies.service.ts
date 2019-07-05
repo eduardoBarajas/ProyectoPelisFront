@@ -4,7 +4,8 @@ import { Movie } from 'src/app/entities/Movie';
 import { IMovie } from 'src/app/entities/IMovie';
 import { IResponse } from 'src/app/entities/IResponse';
 import { IServerMovieList } from 'src/app/entities/IServerMovieList';
-import { environment } from 'src/environments/environment.prod';
+// import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({

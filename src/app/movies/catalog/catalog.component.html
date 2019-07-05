@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-12 mt-4">
                     <mat-accordion>
-                      <mat-expansion-panel style="background: rgba(0,0,0,0.4);" [expanded]="inFilterSearch" (opened)="inFilterSearch = !inFilterSearch" hideToggle>
+                      <mat-expansion-panel style="background: rgba(0,0,0,0.4);" [expanded]="inFilterSearch" (opened)="filterOpened()" hideToggle>
                         <mat-expansion-panel-header>
                           <mat-panel-title>
                             Filtro
@@ -101,7 +101,7 @@
                   <div class="card__content">
                     <h3 class="card__title"><a routerLink="/movie/{{movieList[index].idMovie}}">{{movieList[index].name}}</a></h3>
                     <span class="card__category">
-                      <a *ngFor="let genre of getMovieGenres(movieList[index].genres)">{{genre}}</a>
+                      <a *ngFor="let genre of movieList[index].genres.split(',')">{{genre}}</a>
                     </span>
                     <span class="card__rate"><i class="icon ion-ios-star"></i>{{movieList[index].grade}}</span>
                   </div>
