@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-12 mt-4">
                     <mat-accordion>
-                      <mat-expansion-panel style="opacity: 0.7;" [expanded]="inFilterSearch" (opened)="inFilterSearch = !inFilterSearch" hideToggle>
+                      <mat-expansion-panel style="background: rgba(0,0,0,0.4);" [expanded]="inFilterSearch" (opened)="inFilterSearch = !inFilterSearch" hideToggle>
                         <mat-expansion-panel-header>
                           <mat-panel-title>
                             Filtro
@@ -22,7 +22,7 @@
                           </mat-panel-description>
                         </mat-expansion-panel-header>
                         <ng-template matExpansionPanelContent>
-                          <div class="row">
+                          <div class="row my-2">
                             <div class="col-md-3">
                               <mat-form-field class="w-100">
                                 <mat-label>Categoria</mat-label>
@@ -75,7 +75,7 @@
                             </div>
                           </div>
                           <mat-action-row>
-                            <button class="filter__btn" (click)="getMoviesByFilter()" type="button">Aplicar Filtro</button>
+                            <button class="filter__btn" style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);" (click)="getMoviesByFilter()" type="button">Aplicar Filtro</button>
                           </mat-action-row>
                         </ng-template>
                       </mat-expansion-panel>
@@ -101,7 +101,7 @@
                   <div class="card__content">
                     <h3 class="card__title"><a routerLink="/movie/{{movieList[index].idMovie}}">{{movieList[index].name}}</a></h3>
                     <span class="card__category">
-                      <a *ngFor="let genre of movieList[index].genres.split(',').slice(0, movieList[index].genres.split(',').length - 1)">{{genre}}</a>
+                      <a *ngFor="let genre of getMovieGenres(movieList[index].genres)">{{genre}}</a>
                     </span>
                     <span class="card__rate"><i class="icon ion-ios-star"></i>{{movieList[index].grade}}</span>
                   </div>

@@ -24,10 +24,11 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { CatalogComponent } from './catalog/catalog.component';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { MyMoviesComponent } from './my-movies/my-movies.component';
 
 @NgModule({
   declarations: [MovieDetailsComponent, AddMovieComponent, EditMovieComponent, HomeMoviesComponent,
-    SearchMoviesComponent, CatalogComponent],
+    SearchMoviesComponent, CatalogComponent, MyMoviesComponent],
   imports: [
     CommonModule,
     MatTreeModule,

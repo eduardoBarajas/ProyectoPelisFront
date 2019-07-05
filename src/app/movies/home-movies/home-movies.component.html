@@ -1,5 +1,5 @@
 <mat-spinner class="spinner" style="position: fixed; left: 45%;top: 45%;"></mat-spinner>
-<div class="container-fluid invisible animated slower" style="overflow-y: hidden;" id="layout">
+<div class="container-fluid invisible animated slower my-5" style="overflow-y: hidden;" id="layout">
     <div class="row">
         <div class="col-md-2">
         </div>
@@ -18,7 +18,7 @@
                         </button>
                     </div>
                     <div class="col-12 movie-carousel">
-                        <div class="owl-carousel premier__carousel">    
+                        <div class="owl-carousel premier__carousel" (click)="movieClicked($event)">    
                         </div>
                     </div>
                 </div>
@@ -33,25 +33,30 @@
                         <div class="col-12 my-4">
                             <div class="section-title section-title-2">
                                 <h2>Destacados Del Mes</h2>
-                                <a href="#"><p class="option">Ver Catalogo Completo</p></a>
+                                <a routerLink="catalog"><p class="option">Ver Catalogo Completo</p></a>
                             </div>
                         </div>
                     </div>
                     <mat-divider class="w-75 my-1" style="border-top-width: 3px;"></mat-divider>
                     <nav class="sportlight-tab dark" style="background-color: transparent;">
                         <div class="nav nav-tabs" role="tablist">
-                            <a (click)="setMovies('Recientes')" class="nav-item nav-link active option" data-toggle="tab" href="#recent" role="tab" aria-controls="nav-tab" aria-selected="true">Recientes</a>
-                            <a (click)="setMovies('Populares')" class="nav-item nav-link option" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-tab" aria-selected="false">Populares</a>
-                            <a (click)="setMovies('Proximamente')" class="nav-item nav-link option" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-tab" aria-selected="false">Proximamente</a>
-                            <a (click)="setMovies('MejorCalificadas')" class="nav-item nav-link option" data-toggle="tab" href="#top-rated" role="tab" aria-controls="nav-tab" aria-selected="false">Mejor Calificadas</a>
+                            <a (click)="setMovies('Recientes')" class="nav-item nav-link active option" id="recents-tab" data-toggle="tab" href="#recent" role="tab" aria-controls="nav-tab" aria-selected="true">Recientes</a>
+                            <a (click)="setMovies('Populares')" class="nav-item nav-link option" id="populares-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-tab" aria-selected="false">Populares</a>
+                            <a (click)="setMovies('Favoritas')" class="nav-item nav-link option" id="favoritas-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-tab" aria-selected="false">Favoritas</a>
+                            <a (click)="setMovies('VerDespues')" class="nav-item nav-link option" id="watchlater-tab" data-toggle="tab" href="#top-rated" role="tab" aria-controls="nav-tab" aria-selected="false">Ver Despues</a>
                         </div>
                     </nav>
                     <div class="container">
                         <!-- content tabs -->
                         <div class="tab-content">
-                            <div class="row my-4 animated fast" id="movie-content">
+                            <div class="row my-4 animated fast" id="movie-content" (click)="movieClicked($event)">
                                 <!-- card -->
                                 <!-- end card -->
+                            </div>
+                            <div class="row">
+                                <button class="filter__btn w-25 mx-auto" style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);"
+                                    routerLink="{{optionSelected}}" type="button">Ver Mas
+                                </button>
                             </div>
                         </div>
                 </div>

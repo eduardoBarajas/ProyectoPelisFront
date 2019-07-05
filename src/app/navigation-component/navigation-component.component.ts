@@ -70,7 +70,7 @@ export class NavigationComponentComponent implements OnInit {
   }
 
   logOut() {
-    localStorage.clear();
+    this.authService.logOut();
     this.adminLinks = false;
     this.loginBtn = true;
     this.snackbar.open('Se cerro la session');

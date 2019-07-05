@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule, MatFormFieldModule, MatToolbarModule, MatDividerModule, MatCheckboxModule, MatInputModule } from '@angular/material';
 
 @NgModule({
@@ -14,6 +14,7 @@ import { MatIconModule, MatFormFieldModule, MatToolbarModule, MatDividerModule, 
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatIconModule,
     MatFormFieldModule,
     MatToolbarModule,

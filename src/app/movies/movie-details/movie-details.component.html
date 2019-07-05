@@ -1,4 +1,4 @@
-<div class="container-fluid animated slower" [ngClass]="{'fadeIn': contentLoaded}" *ngIf="contentLoaded">
+<div class="container-fluid animated slow" [ngClass]="{'fadeIn': contentLoaded}" *ngIf="contentLoaded">
   <div class="row">
     <div class="col-md-2">
 
@@ -14,7 +14,7 @@
               <h1 class="details__title">{{movie.name}}</h1>
             </div>
             <!-- end title -->
-  
+
             <!-- content -->
             <div class="col-12 col-xl-6">
               <div class="card card--details">
@@ -25,27 +25,37 @@
                       <img src="{{movie.poster}}" alt="">
                       <div class="row">
                         <div class="col-md-12 col-12 my-1">
-                          <button class="btn_movie_action" mat-flat-button style="background-color: green;" (click)="modifyFavorites(movie)"><mat-icon>favorite</mat-icon> {{favoritesLabel}}</button>
+                          <button class="btn_movie_action option-favorites px-0" mat-flat-button
+                            [ngClass]="{'selected': addedToFavoritesList}" (click)="modifyFavorites(movie)">
+                            <mat-icon>favorite</mat-icon> {{favoritesLabel}}
+                          </button>
                         </div>
                         <div class="col-md-12 col-12">
-                          <button class="btn_movie_action" mat-flat-button style="background-color: darkslateblue;" (click)="modifyWatchLater(movie)"><mat-icon>schedule</mat-icon> {{watchLaterLabel}}</button>
+                          <button class="btn_movie_action option-watch-later px-0"
+                            [ngClass]="{'selected': addedToWatchLaterList}" mat-flat-button
+                            (click)="modifyWatchLater(movie)">
+                            <mat-icon>schedule</mat-icon> {{watchLaterLabel}}
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
                   <!-- end card cover -->
-    
+
                   <!-- card content -->
                   <div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-7">
                     <div class="card__content">
                       <ul class="card__meta text-justify">
-                        <li><span>Rating:</span><i class="icon ion-ios-star"></i><p>{{movie.grade}}</p>
-                        <li><span>Genero(s):</span> <p>{{movie.genres}}</p>
+                        <li><span>Rating:</span><i class="icon ion-ios-star"></i>
+                          <p>{{movie.grade}}</p>
+                        <li><span>Genero(s):</span>
+                          <p>{{movie.genres}}</p>
                         <li><span>Anio Estreno:</span> {{movie.year}}</li>
                         <li><span>Duracion:</span> {{movie.length}} min(s)</li>
                       </ul>
-    
-                      <div class="card__description card__description--details noScrollBar description_size text-justify">
+
+                      <div
+                        class="card__description card__description--details noScrollBar description_size text-justify">
                         {{movie.synopsis}}
                       </div>
                     </div>
@@ -55,220 +65,204 @@
               </div>
             </div>
             <!-- end content -->
-  
-          <!-- player -->
-          <div class="col-12 col-xl-6 movie-player" *ngIf="movieLinks.size > 0; else NoLinks">
-            <div class="row">
-              <div class="col-md-6">
-                <mat-form-field color="accent">
-                  <mat-label>Selecciona una opcion</mat-label>
-                  <mat-select [(value)]="movieOptionSelected" panelClass="mat-select-panel">
-                    <mat-option style="color: whitesmoke;" value="{{link}}" *ngFor="let link of movieLinksKeys">{{link.split('/')[2]}}</mat-option>
-                  </mat-select>
-                </mat-form-field>
+
+            <!-- player -->
+            <div class="col-12 col-xl-6 movie-player" *ngIf="movieLinks.size > 0; else NoLinks">
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field color="accent">
+                    <mat-label>Selecciona una opcion</mat-label>
+                    <mat-select [(value)]="movieOptionSelected" panelClass="mat-select-panel">
+                      <mat-option style="color: whitesmoke;" value="{{link}}" *ngFor="let link of movieLinksKeys">
+                        {{link.split('/')[2]}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <button class="w-100" mat-flat-button style="background-color: tomato;"
+                    (click)="reportLinkDown()">Link Caido?</button>
+                </div>
               </div>
-              <div class="col-md-6">
-                <button class="w-100" mat-flat-button style="background-color: tomato;" (click)="reportLinkDown()">Link Caido?</button>
-              </div>
+              <iframe [src]="movieLinks.get(movieOptionSelected)" width="100%" height="90%" frameborder="0"
+                allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
             </div>
-            <iframe [src]="movieLinks.get(movieOptionSelected)" width="100%" height="90%" frameborder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+            <!-- end player -->
+            <ng-template #NoLinks>
+              <div class="col-12 col-xl-6 movie-player text-center">
+                <img class="img-fluid" src="assets/img/Movie-Studio-icon.png" />
+                <p class="display-3 mx-4" style="font-size: 1.5rem;">No se encontraron provedores de la pelicula.</p>
+              </div>
+            </ng-template>
           </div>
-          <!-- end player -->
-          <ng-template #NoLinks>
-            <div class="col-12 col-xl-6 movie-player text-center">
-              <img class="img-fluid" src="assets/img/Movie-Studio-icon.png" />
-              <p class="display-3 mx-4" style="font-size: 1.5rem;">No se encontraron provedores de la pelicula.</p>
-            </div>
-          </ng-template>
         </div>
-      </div>
-      <!-- end details content -->
-    </section>
-    <!-- end details -->
+        <!-- end details content -->
+      </section>
+      <!-- end details -->
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <!-- content -->
-	<section class="content">
-      <div class="content__head">
-        <div class="container">
-          <div class="row">
-            <div class="col-12">
-              <!-- content tabs nav -->
-              <ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Comentarios</a>
-                </li>
-  
-                <li class="nav-item">
-                  <a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Reviews</a>
-                </li>
-  
-              </ul>
-              <!-- end content tabs nav -->
-  
-              <!-- content mobile tabs nav -->
-              <div class="content__mobile-tabs" id="content__mobile-tabs">
-                <div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <input type="button" value="Comments">
-                  <span></span>
-                </div>
-  
-                <div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
-                  <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Comentarios</a></li>
-  
-                    <li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Reviews</a></li>
-  
-                  </ul>
-                </div>
+      <div class="col-md-12">
+        <div class="sportlight-section dark" style="background-color: transparent;">
+          <div class="container">
+            <mat-divider class="w-75 my-1" style="border-top-width: 3px;"></mat-divider>
+            <nav class="sportlight-tab dark mb-3" style="background-color: transparent;">
+              <div class="nav nav-tabs" role="tablist">
+                  <a class="option-link active" data-toggle="tab" href="#tab-1" role="tab"
+                  aria-controls="tab-1" aria-selected="true">Comentarios</a>
+                  <a class="option-link" data-toggle="tab" href="#tab-2" role="tab"
+                  aria-controls="tab-2" aria-selected="false">Reviews</a>
               </div>
-              <!-- end content mobile tabs nav -->
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <div class="container">
-        <div class="row">
-          <div class="col-12 col-lg-8 col-xl-8">
-            <!-- content tabs -->
-            <div class="tab-content" id="myTabContent">
-              <div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
-                <div class="row">
-                  <!-- comments -->
-                  <div class="col-12">
-                    <div class="comments">
-                      <ul class="comments__list">
-                        <li class="comments__item" *ngFor="let c of comments">
-                          <div class="comments__autor">
-                            <img class="comments__avatar" src="assets/img/stock.jpg" alt="">
-                            <span class="comments__name">{{c.username}}</span>
-                            <span class="comments__time">{{c.publishedDate}}, {{c.publishedTime}}</span>
+            </nav>
+            <div class="container">
+              <div class="row">
+                <div class="col-12 col-lg-8 col-xl-8">
+                  <!-- content tabs -->
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+                      <div class="row">
+                        <!-- comments -->
+                        <div class="col-12">
+                          <div class="comments">
+                            <ul class="comments__list">
+                              <li class="comments__item" *ngFor="let c of comments">
+                                <div class="comments__autor">
+                                  <img class="comments__avatar" src="assets/img/stock.jpg" alt="">
+                                  <span class="comments__name">{{c.username}}</span>
+                                  <span class="comments__time">{{c.publishedDate}}, {{c.publishedTime}}</span>
+                                </div>
+                                <p *ngIf="commentSelected.idComment !== c.idComment" class="comments__text">
+                                  {{c.comment}}
+                                </p>
+                                <textarea *ngIf="commentSelected.idComment === c.idComment" [(ngModel)]="c.comment"
+                                  id="text" name="text" class="form__textarea" placeholder="Agregar Comentario"></textarea>
+                                <div class="comments__actions">
+                                  <div class="comments__rate" *ngIf="checkCommentAuth(c)">
+                                    <button (click)="deleteComment(c)" type="button">Eliminar<i
+                                        class="icon ion-md-delete"></i></button>
+                                    <button *ngIf="commentSelected.idComment !== c.idComment"
+                                      (click)="commentSelected = c" type="button">Editar<i
+                                        class="icon ion-md-edit"></i></button>
+                                    <button *ngIf="commentSelected.idComment === c.idComment" (click)="editComment(c)"
+                                      type="button">Confirmar<i class="icon ion-md-edit"></i></button>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+
+                            <form class="form">
+                              <textarea [(ngModel)]="comment.comment" id="text" name="text" class="form__textarea"
+                                placeholder="Add comment"></textarea>
+                              <button type="button" (click)="publishComment()" style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);" class="form__btn">Publicar</button>
+                            </form>
                           </div>
-                          <p *ngIf="commentSelected.idComment !== c.idComment" class="comments__text">{{c.comment}}</p>
-                          <textarea *ngIf="commentSelected.idComment === c.idComment" [(ngModel)]="c.comment" id="text" name="text" class="form__textarea" placeholder="Add comment"></textarea>
-                          <div class="comments__actions">
-                            <div class="comments__rate" *ngIf="checkCommentAuth(c)">
-                              <button (click)="deleteComment(c)" type="button">Eliminar<i class="icon ion-md-delete"></i></button>
-                              <button *ngIf="commentSelected.idComment !== c.idComment" (click)="commentSelected = c" type="button">Editar<i class="icon ion-md-edit"></i></button>
-                              <button *ngIf="commentSelected.idComment === c.idComment" (click)="editComment(c)" type="button">Confirmar<i class="icon ion-md-edit"></i></button>
-                            </div>
+                        </div>
+                        <!-- end comments -->
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+                      <div class="row">
+                        <!-- reviews -->
+                        <div class="col-12">
+                          <div class="reviews">
+                            <ul class="reviews__list">
+                              <li class="reviews__item" *ngFor="let r of reviews">
+                                <div class="reviews__autor">
+                                  <img class="reviews__avatar" src="assets/img/stock.jpg" alt="">
+                                  <div *ngIf="reviewSelected.idReview !== r.idReview;else editReviewTitle">
+                                    <span class="reviews__name">{{r.reviewTitle}}</span>
+                                    <span class="reviews__time">{{r.publishedDate}}, {{r.publishedTime}} por
+                                      {{r.username}}</span>
+                                    <span class="reviews__rating"><i class="icon ion-ios-star"></i>{{r.grade}}</span>
+                                  </div>
+                                  <ng-template #editReviewTitle>
+                                    <input type="text" class="form__input" [(ngModel)]="r.reviewTitle"
+                                      placeholder="Title" [ngModelOptions]="{standalone: true}">
+                                  </ng-template>
+                                </div>
+                                <div *ngIf="reviewSelected.idReview !== r.idReview;else editReviewDiv">
+                                  <p class="reviews__text">{{r.review}}</p>
+                                </div>
+                                <ng-template #editReviewDiv>
+                                  <textarea class="form__textarea" [(ngModel)]="r.review" placeholder="Review"
+                                    [ngModelOptions]="{standalone: true}"></textarea>
+                                  <mat-label>Rating</mat-label>
+                                  <mat-slider class="w-50" [max]="5" [min]="0" [step]="0.1" [thumbLabel]="true"
+                                    [(ngModel)]="r.grade" [ngModelOptions]="{standalone: true}">
+                                  </mat-slider>
+                                </ng-template>
+                                <div class="comments__actions">
+                                  <div class="comments__rate" *ngIf="checkReviewAuth(r)">
+                                    <button (click)="deleteReview(r)" type="button">Eliminar<i
+                                        class="icon ion-md-delete"></i></button>
+                                    <button *ngIf="reviewSelected.idReview !== r.idReview" (click)="reviewSelected = r"
+                                      type="button">Editar<i class="icon ion-md-edit"></i></button>
+                                    <button *ngIf="reviewSelected.idReview === r.idReview" (click)="editReview(r)"
+                                      type="button">Confirmar<i class="icon ion-md-edit"></i></button>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+
+                            <form class="form">
+                              <input type="text" class="form__input" [(ngModel)]="review.reviewTitle"
+                                placeholder="Title" [ngModelOptions]="{standalone: true}">
+                              <textarea class="form__textarea" [(ngModel)]="review.review" placeholder="Review"
+                                [ngModelOptions]="{standalone: true}"></textarea>
+                              <mat-label>Rating</mat-label>
+                              <mat-slider class="w-50" [max]="5" [min]="0" [step]="0.1" [thumbLabel]="true"
+                                [(ngModel)]="review.grade" [ngModelOptions]="{standalone: true}">
+                              </mat-slider>
+                              <button mat-flat-button cdkFocusInitial class="mx-2"
+                                (click)="publishReview()" style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);">Publicar</button>
+                            </form>
                           </div>
-                        </li>
-                      </ul>
-  
-                      <form class="form">
-                        <textarea [(ngModel)]="comment.comment" id="text" name="text" class="form__textarea" placeholder="Add comment"></textarea>
-                        <button type="button" (click)="publishComment()" class="form__btn">Send</button>
-                      </form>
+                        </div>
+                        <!-- end reviews -->
+                      </div>
                     </div>
                   </div>
-                  <!-- end comments -->
+                  <!-- end content tabs -->
                 </div>
-              </div>
-              <div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
-                <div class="row">
-                  <!-- reviews -->
-                  <div class="col-12">
-                    <div class="reviews">
-                      <ul class="reviews__list">
-                        <li class="reviews__item" *ngFor="let r of reviews">
-                          <div class="reviews__autor">
-                            <img class="reviews__avatar" src="assets/img/stock.jpg" alt="">
-                            <div *ngIf="reviewSelected.idReview !== r.idReview;else editReviewTitle">
-                              <span class="reviews__name">{{r.reviewTitle}}</span>
-                              <span class="reviews__time">{{r.publishedDate}}, {{r.publishedTime}} por {{r.username}}</span>
-                              <span class="reviews__rating"><i class="icon ion-ios-star"></i>{{r.grade}}</span>
-                            </div>
-                            <ng-template #editReviewTitle>
-                              <input type="text" class="form__input" [(ngModel)]="r.reviewTitle" placeholder="Title" [ngModelOptions]="{standalone: true}">
-                            </ng-template>
-                          </div>
-                          <div *ngIf="reviewSelected.idReview !== r.idReview;else editReviewDiv">
-                            <p class="reviews__text">{{r.review}}</p>
-                          </div>
-                          <ng-template #editReviewDiv>
-                            <textarea class="form__textarea" [(ngModel)]="r.review" placeholder="Review" [ngModelOptions]="{standalone: true}"></textarea>
-                            <mat-label >Rating</mat-label>
-                              <mat-slider class="w-50"
-                                [max]="5"
-                                [min]="0"
-                                [step]="0.1"
-                                [thumbLabel]="true"
-                                [(ngModel)]="r.grade" 
-                                [ngModelOptions]="{standalone: true}">
-                            </mat-slider>
-                          </ng-template>
-                          <div class="comments__actions">
-                            <div class="comments__rate" *ngIf="checkReviewAuth(r)">
-                              <button (click)="deleteReview(r)" type="button">Eliminar<i class="icon ion-md-delete"></i></button>
-                              <button *ngIf="reviewSelected.idReview !== r.idReview" (click)="reviewSelected = r" type="button">Editar<i class="icon ion-md-edit"></i></button>
-                              <button *ngIf="reviewSelected.idReview === r.idReview" (click)="editReview(r)" type="button">Confirmar<i class="icon ion-md-edit"></i></button>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-  
-                      <form class="form">
-                        <input type="text" class="form__input" [(ngModel)]="review.reviewTitle" placeholder="Title" [ngModelOptions]="{standalone: true}">
-                        <textarea class="form__textarea" [(ngModel)]="review.review" placeholder="Review" [ngModelOptions]="{standalone: true}"></textarea>
-                        <mat-label >Rating</mat-label>
-                          <mat-slider class="w-50"
-                            [max]="5"
-                            [min]="0"
-                            [step]="0.1"
-                            [thumbLabel]="true"
-                            [(ngModel)]="review.grade" 
-                            [ngModelOptions]="{standalone: true}">
-                        </mat-slider>
-                        <button mat-flat-button color="primary" cdkFocusInitial class="mx-2" (click)="publishReview()">Publicar</button>
-                      </form>
+
+                <!-- sidebar -->
+                <div class="col-12 col-lg-4 col-xl-4">
+                  <div class="row">
+                    <!-- section title -->
+                    <div class="col-12">
+                      <h2 class="section__title section__title--sidebar">Tambien te podrian gustar...</h2>
                     </div>
-                  </div>
-                  <!-- end reviews -->
-                </div>
-              </div>
-            </div>
-            <!-- end content tabs -->
-          </div>
-  
-          <!-- sidebar -->
-          <div class="col-12 col-lg-4 col-xl-4">
-            <div class="row">
-              <!-- section title -->
-              <div class="col-12">
-                <h2 class="section__title section__title--sidebar">Tambien te podrian gustar...</h2>
-              </div>
-              <!-- end section title -->
-  
-              <!-- card -->
-              <div class="col-6 col-sm-4 col-lg-6" *ngFor="let similar of similarMovies">
-                <div class="card">
-                  <div class="card__cover">
-                    <img src="{{similar.poster}}" alt="">
-                    <a routerLink="/movie/{{similar.idMovie}}" class="card__play">
-                      <i class="icon ion-ios-play"></i>
-                    </a>
-                  </div>
-                  <div class="card__content">
-                    <h3 class="card__title"><a routerLink="/movie/{{similar.idMovie}}" >{{similar.name}}</a></h3>
-                    <span class="card__category">
-                      <a *ngFor="let genre of similar.genres.split(',').slice(0, similar.genres.split(',').length - 1)">{{genre}}</a>
-                    </span>
-                    <span class="card__rate"><i class="icon ion-ios-star"></i>{{similar.grade}}</span>
+                    <!-- end section title -->
+
+                    <!-- card -->
+                    <div class="col-6 col-sm-4 col-lg-6" *ngFor="let similar of similarMovies">
+                      <div class="card">
+                        <div class="card__cover">
+                          <img src="{{similar.poster}}" alt="">
+                          <a routerLink="/movie/{{similar.idMovie}}" class="card__play">
+                            <i class="icon ion-ios-play"></i>
+                          </a>
+                        </div>
+                        <div class="card__content">
+                          <h3 class="card__title"><a routerLink="/movie/{{similar.idMovie}}">{{similar.name}}</a></h3>
+                          <span class="card__category">
+                            <a
+                              *ngFor="let genre of similar.genres.split(',').slice(0, similar.genres.split(',').length - 1)">{{genre}}</a>
+                          </span>
+                          <span class="card__rate"><i class="icon ion-ios-star"></i>{{similar.grade}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end card -->
                   </div>
                 </div>
+                <!-- end sidebar -->
               </div>
-              <!-- end card -->
             </div>
+
           </div>
-          <!-- end sidebar -->
+          <!-- Sportlight Section End -->
         </div>
       </div>
-    </section>
-    <!-- end content -->
     </div>
   </div>
-</div>

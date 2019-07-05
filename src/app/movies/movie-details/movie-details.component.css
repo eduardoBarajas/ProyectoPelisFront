@@ -11,6 +11,127 @@
     overflow:auto;
 }
 
+.option-watch-later {
+  animation-name: paint-in-anim-watch-later;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+.option-watch-later:hover {
+  transform: scale(1.1);
+}
+
+.option-watch-later.selected {
+  animation-name: paint-out-anim-watch-later;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+@keyframes paint-out-anim-watch-later {
+  0%   {
+    font-size: 1em;
+    background-color: darkslateblue;
+  }
+  100%   {
+    font-size: 1.1em;
+    background-color: #ff5722;
+  }
+}
+
+@keyframes paint-in-anim-watch-later {
+  0%   {
+    font-size: 1.1em;
+    background-color: #ff5722;
+  }
+  100%   {
+    font-size: 1em;
+    background-color: darkslateblue;
+  }
+}
+
+.option-favorites {
+  animation-name: paint-in-anim-favorites;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+.option-favorites:hover {
+  transform: scale(1.1);
+}
+
+.option-favorites.selected {
+  animation-name: paint-out-anim-favorites;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+.option-link.active {
+  color: whitesmoke;
+  background-color: darkgoldenrod;
+  border-color: transparent;
+}
+
+.option-link:hover {
+  transform: scale(1.2);
+}
+
+.option-link {
+  color: gold;
+  border-radius: 25px;
+  display: block;
+  padding: .5rem 1rem;
+}
+
+.nav-tabs.option-link {
+  border: 1px solid transparent;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+}
+
+@keyframes paint-out-anim-favorites {
+  0%   {
+    font-size: 1rem;
+    background-color: #43a047;
+  }
+  100%   {
+    font-size: 1.1rem;
+    background-color: #ff5722;
+  }
+}
+
+@keyframes paint-in-anim-favorites {
+  0%   {
+    font-size: 1.1rem;
+    background-color: #ff5722;
+  }
+  100%   {
+    font-size: 1rem;
+    background-color: #43a047;
+  }
+}
+
+.tab-interaction {
+  color: whitesmoke;
+  background-color: #212121;
+  border-color: transparent;
+}
+
   @media (min-width: 360px) {
     .btn_movie_action {
         width: 75%!important;;

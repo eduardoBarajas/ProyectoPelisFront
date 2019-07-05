@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Favorite } from 'src/app/entities/Favorite';
 import { IFavorite } from 'src/app/entities/IFavorite';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoritesService {
-
-  apiUrl = 'http://localhost:8080/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -17,21 +16,24 @@ export class FavoritesService {
   constructor(private httpClient: HttpClient) { }
 
   save(favorite: Favorite) {
-    return this.httpClient.post('http://localhost:8080/Favorites/', favorite, this.httpOptions);
+    return this.httpClient.post(`${environment.apiUrl}Favorites/`, favorite, this.httpOptions);
   }
   getAllByIdUser(idUser: number) {
-    return this.httpClient.get(`${this.apiUrl}Favorites/User/${idUser}/`);
+    return this.httpClient.get(`${environment.apiUrl}Favorites/User/${idUser}/`);
   }
   update(favorite: Favorite) {
-    return this.httpClient.put<IFavorite>(`${this.apiUrl}Favorites/${favorite.idFavorites}/`, favorite, this.httpOptions);
+    return this.httpClient.put<IFavorite>(`${environment.apiUrl}Favorites/${favorite.idFavorites}/`, favorite, this.httpOptions);
   }
   deleteById(idFavorite: number) {
-    return this.httpClient.delete<IFavorite>(`${this.apiUrl}Favorites/${idFavorite}/`);
+    return this.httpClient.delete<IFavorite>(`${environment.apiUrl}Favorites/${idFavorite}/`);
   }
   deleteByIdMovie(idMovie: number) {
-    return this.httpClient.delete<IFavorite>(`${this.apiUrl}Favorites/Movie/${idMovie}/`);
+    return this.httpClient.delete<IFavorite>(`${environment.apiUrl}Favorites/Movie/${idMovie}/`);
   }
   getByIdMovie(idMovie: number) {
-    return this.httpClient.get(`${this.apiUrl}Favorites/Movie/${idMovie}/`);
+    return this.httpClient.get(`${environment.apiUrl}Favorites/Movie/${idMovie}/`);
+  }
+  getByIdMovieAndIdUser(idMovie: number, idUser: number) {
+    return this.httpClient.get(`${environment.apiUrl}Favorites/Movie/${idMovie}/User/${idUser}/`);
   }
 }

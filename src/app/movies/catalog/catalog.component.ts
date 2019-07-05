@@ -27,7 +27,10 @@ export class CatalogComponent implements OnInit {
   ngOnInit() {
     this.movieService.getGenresList().subscribe( response => {
       if (response.status.includes('Success')) {
-        this.genresList = response.responses;
+        this.genresList.push('Todos');
+        response.responses.forEach( genre => {
+          this.genresList.push(genre);
+        });
       } else {
         this.snackbar.open(`${response.message}`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
@@ -141,5 +144,17 @@ export class CatalogComponent implements OnInit {
         duration: 3500, panelClass: ['error-snackbar']});
     }
     return validFilter;
+  }
+
+  getMovieGenres(genres: string) {
+    const genresList = genres.split(',').slice(0, genres.split(',').length - 1);
+    const returnedGenres = [];
+    for (let x = 0; x < genresList.length; x ++) {
+      const index = Math.floor(Math.random() * genresList.length);
+      if (!returnedGenres.includes(genresList[index]) && returnedGenres.length < 2) {
+        returnedGenres.push(genresList[index]);
+      }
+    }
+    return returnedGenres;
   }
 }
