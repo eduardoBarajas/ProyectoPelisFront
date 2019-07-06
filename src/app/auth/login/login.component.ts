@@ -14,14 +14,14 @@ import { Input } from '@angular/compiler/src/core';
 export class LoginComponent implements OnInit, AfterViewInit {
   // @ViewChild('usernameInput', null) usernameInput: ElementRef;
 
-  username: FormControl = new FormControl(null, [Validators.required, Validators.minLength(1), Validators.maxLength(25)]);
+  username: FormControl = new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z0-9_-]{3,15}$')]);
   pass: FormControl = new FormControl(null, [Validators.required, Validators.minLength(1), Validators.maxLength(25)]);
   constructor(private authService: AuthService, private router: Router, private snackbar: MatSnackBar) {
    }
 
   ngOnInit() {
-    this.username.setValue('Ingresa Tu Usuario');
-    this.pass.setValue('.');
+    this.username.setValue('');
+    this.pass.setValue('');
   }
 
   ngAfterViewInit(): void {
@@ -64,13 +64,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   recoverPassword() {
     console.log('xd');
-  }
-
-  cleanUsernameControl() {
-    if (this.username.value === 'Ingresa Tu Usuario') {
-      this.username.setValue('');
-      this.pass.setValue(' ');
-    }
   }
 
 }

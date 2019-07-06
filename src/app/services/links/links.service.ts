@@ -17,15 +17,31 @@ export class LinksService {
 
   constructor(private httpClient: HttpClient) { }
 
-  saveMovieLinks(links: MovieLinks[]) {
+  saveAll(links: MovieLinks[]) {
     return this.httpClient.post(`${environment.apiUrl}admin/links/movies/`, links, this.httpOptions);
   }
 
-  getMovieLinksFromMovie(idMovie: number) {
+  replaceAll(links: MovieLinks[]) {
+    return this.httpClient.post(`${environment.apiUrl}admin/links/movies/replaceAll`, links, this.httpOptions);
+  }
+
+  getFromMovie(idMovie: number) {
     return this.httpClient.get(`${environment.apiUrl}links/movie/${idMovie}`);
   }
 
-  deleteLinksFromMovie(idMovie: number) {
+  update(link: MovieLinks) {
+    return this.httpClient.put(`${environment.apiUrl}links/movie/${link.idLinkMovie}`, link, this.httpOptions);
+  }
+
+  updateAll(links: MovieLinks[]) {
+    return this.httpClient.put(`${environment.apiUrl}admin/links/movie/updateAll`, links, this.httpOptions);
+  }
+
+  deleteAll(ids: number[]) {
+    return this.httpClient.delete(`${environment.apiUrl}admin/links/movie/deleteAll/ids=${ids}`);
+  }
+
+  deleteFromMovie(idMovie: number) {
    return this.httpClient.delete(`${environment.apiUrl}admin/links/movie/${idMovie}`, this.httpOptions);
   }
 }

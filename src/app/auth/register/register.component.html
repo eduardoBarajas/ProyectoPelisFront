@@ -1,3 +1,58 @@
-<p>
-  register works!
-</p>
+<div class="container-fluid form-div" style="margin-top: 12vh;margin-bottom: 4vh;">
+  <div class="row">
+    <div class="col-12">
+      <!-- authorization form -->
+      <form class="sign__form mx-auto py-2">
+        <a href="index.html" class="py-2">
+          <h1>Peliculas Dex</h1>
+        </a>
+        <div class="row">
+          <div class="col-12 col-md-12 text-center">
+            <input [formControl]="username" type="text" class="sign__input"
+              placeholder="Usuario" autocomplete="none">
+          </div>
+          <div class="col-12 col-md-12">
+            <p [ngClass]="{'wobble fast': !username.valid, 'fadeOut faster': username.valid }" class="animated"
+              style="color: tomato;text-align: center;">
+              Por favor ingresa un usuario valido (Ej. Edu_24).
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-12 text-center">
+            <input [formControl]="email" type="text" class="sign__input" placeholder="Email" autocomplete="none">
+          </div>
+          <div class="col-12 col-md-12">
+            <p [ngClass]="{'wobble fast': !email.valid, 'fadeOut faster': email.valid }" class="animated"
+              style="color: tomato;text-align: center;">
+              Por favor ingresa un email valido.
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-12 text-center">
+            <input [formControl]="pass" type="password" class="sign__input" placeholder="Password">
+          </div>
+          <div class="col-12 col-md-12">
+            <p [ngClass]="{'wobble fast': !pass.valid, 'fadeOut faster': pass.valid }" class="animated"
+              style="color: tomato;text-align: center;">
+              Por favor ingresa una contrasena valida. (Ej. P@55W0Rd)
+            </p>
+          </div>
+        </div>
+
+        <button class="sign__btn"
+          style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);" type="button" (click)="createAccount()">Crear Cuenta</button>
+
+        <span class="sign__text">Ya Tienes Cuenta? <a [routerLink]="['/login']">Inicia Sesion!</a></span>
+
+
+      </form>
+      <!-- end authorization form -->
+    </div>
+
+
+  </div>
+</div>

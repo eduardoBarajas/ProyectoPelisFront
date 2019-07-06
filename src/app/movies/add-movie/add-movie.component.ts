@@ -166,7 +166,7 @@ export class AddMovieComponent implements OnInit {
           });
           // en este punto ya se tienen los links de todas las peliculas que recien se agregaron
           // y se mandan a la api para actualizarse.
-          this.linksService.saveMovieLinks(links_movies_list).subscribe({
+          this.linksService.replaceAll(links_movies_list).subscribe({
             next: (() => {
               this.uploadingMovies = !this.uploadingMovies;
               this.snackbar.open(response.message);

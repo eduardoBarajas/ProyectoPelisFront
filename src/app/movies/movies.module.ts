@@ -25,6 +25,7 @@ import { CatalogComponent } from './catalog/catalog.component';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MyMoviesComponent } from './my-movies/my-movies.component';
+import { LinksDialogComponent } from '../dialogs/links-dialog/links-dialog.component';
 
 @NgModule({
   declarations: [MovieDetailsComponent, AddMovieComponent, EditMovieComponent, HomeMoviesComponent,
@@ -50,7 +51,7 @@ import { MyMoviesComponent } from './my-movies/my-movies.component';
     MoviesRoutingModule
   ],
   entryComponents: [
-    MovieDialogComponent
+    MovieDialogComponent, LinksDialogComponent
   ],
   exports: [
     HomeMoviesComponent

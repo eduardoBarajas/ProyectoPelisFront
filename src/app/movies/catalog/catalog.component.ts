@@ -28,19 +28,6 @@ export class CatalogComponent implements OnInit {
   ngOnInit() {
     this.filterData = {genre: 'Todos', startYear: 2019, endYear: 2019, startRating: 0, endRating: 5};
     this.getMoviesByFilter();
-    /*this.movieService.getAllByYear(2019).subscribe( newMovies => {
-      if (newMovies['_embedded'] != null) {
-        this.movieList = newMovies['_embedded']['movieDTOList'];
-        this.setPageEvent(this.movieList);
-        this.pageChange(this.pageEvent);
-      } else {
-        this.snackbar.open(`No se obtuvieron las peliculas`, '', {
-          duration: 3500, panelClass: ['error-snackbar']});
-      }
-    }, (err: HttpErrorResponse) => {
-      this.snackbar.open(`${err.message}`, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-    });*/
   }
 
   pageChange(page: PageEvent) {
@@ -84,6 +71,7 @@ export class CatalogComponent implements OnInit {
               if (this.filterData.genre.includes('Todos')) {
                 genres = `${movieGenres[Math.floor(Math.random() * movieGenres.length)]},`;
               }
+              // tslint:disable-next-line: prefer-for-of
               for (let x = 0; x < movieGenres.length; x++) {
                 const index = Math.floor(Math.random() * movieGenres.length);
                 if (!genres.includes(movieGenres[index]) && genres.split(',').length < 3) {

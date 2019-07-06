@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Links De La Pelicula</h2>
+<mat-dialog-content class="scrollbar-success mat-typography">
+  <div class="container-fluid">
+    <div class="row mt-2" *ngFor="let link of movieLinks">
+      <div class="col-md-8">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>URI Pelicula</mat-label>
+          <input [(ngModel)]="link.link" matInput placeholder="http://sitio.de.la.pelicula.com/">
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <button mat-flat-button color="warn" (click)="clickDeleteLink(link)">Eliminar</button>
+      </div>
+    </div>
+    <div class="row mt-2" *ngFor="let link of addedMovieLinks">
+      <div class="col-md-8">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>URI Pelicula</mat-label>
+          <input [(ngModel)]="link.link" matInput placeholder="http://sitio.de.la.pelicula.com/">
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <button mat-flat-button color="warn" (click)="clickDeleteLink(link)">Eliminar</button>
+      </div>
+    </div>
+    <div class="row my-2">
+      <div class="col-md-4 mx-auto">
+        <button mat-flat-button color="warn" (click)="clickAddLink()">Agregar</button>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="mt-2">
+    <mat-checkbox [(ngModel)]="checked" class="mx-2">Confirmar Cambios</mat-checkbox>
+  <button mat-flat-button color="warn" mat-dialog-close class="mx-2" (click)="clickCancelar()">Cancelar</button>
+  <button mat-flat-button color="primary" cdkFocusInitial class="mx-2" (click)="clickAceptar()">Aceptar</button>
+</mat-dialog-actions>

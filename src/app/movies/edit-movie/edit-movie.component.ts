@@ -8,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MovieDialogComponent } from 'src/app/dialogs/movie-dialog/movie-dialog.component';
 import { assignIMovieToIMovie } from 'src/app/helpers/MovieMapper';
 import { LinksService } from 'src/app/services/links/links.service';
+import { LinksDialogComponent } from 'src/app/dialogs/links-dialog/links-dialog.component';
 
 @Component({
   selector: 'app-edit-movie',
@@ -30,8 +31,7 @@ export class EditMovieComponent implements OnInit {
   expandedElement: IMovie | null;
   loaded = false;
 
-  constructor(private moviesService: MoviesService, private snackbar: MatSnackBar, private dialog: MatDialog,
-    private linksService: LinksService) { }
+  constructor(private moviesService: MoviesService, private snackbar: MatSnackBar, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.moviesService.getAll().subscribe( {
@@ -73,6 +73,12 @@ export class EditMovieComponent implements OnInit {
             duration: 3500, panelClass: ['error-snackbar']});
         });
       }
+    });
+  }
+
+  openMovieLinks(mov: IMovie) {
+    const linksDialog = this.dialog.open(LinksDialogComponent, {
+      width: '500px', data: {idMovie: mov.idMovie}
     });
   }
 

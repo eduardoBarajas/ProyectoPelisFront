@@ -15,6 +15,7 @@ import { FavoritesService } from 'src/app/services/favorites/favorites.service';
 import { WatchLaterService } from 'src/app/services/watch_later/watch-later.service';
 import { WatchLater } from 'src/app/entities/WatchLater';
 import { Favorite } from 'src/app/entities/Favorite';
+import { MovieLinks } from 'src/app/entities/MovieLinks';
 
 @Component({
   selector: 'app-movie-details',
@@ -26,6 +27,7 @@ export class MovieDetailsComponent implements OnInit {
   contentLoaded = false;
   movie: Movie;
   movieLinks = new Map<string, SafeResourceUrl>();
+  movieLinksMap = new Map<string, MovieLinks>();
   movieLinksKeys = [];
   movieOptionSelected = '';
   similarMovies: Movie[] = [];
@@ -67,7 +69,7 @@ export class MovieDetailsComponent implements OnInit {
     this.movie = null;
     this.similarMovies = [];
     this.activatedRoute.url.subscribe( url => {
-      this.linkService.getMovieLinksFromMovie(+url[1].path).subscribe( responseLinks => {
+      this.linkService.getFromMovie(+url[1].path).subscribe( responseLinks => {
         console.log(responseLinks);
         if (responseLinks['_embedded'] != null) {
           responseLinks['_embedded']['movieLinksDTOList'].forEach( movieLink => {
@@ -79,6 +81,7 @@ export class MovieDetailsComponent implements OnInit {
             });
             if (!block) {
               this.movieLinks.set(movieLink.link, this.sanitazer.bypassSecurityTrustResourceUrl(movieLink.link));
+              this.movieLinksMap.set(movieLink.link, movieLink);
               this.movieLinksKeys.push(movieLink.link);
             }
           });
@@ -161,6 +164,21 @@ export class MovieDetailsComponent implements OnInit {
           duration: 3500, panelClass: ['error-snackbar']});
       });
     });
+  }
+
+  reportLinkDown() {
+    if (this.movieOptionSelected) {
+      this.movieLinksMap.get(this.movieOptionSelected).active = 0;
+      this.linkService.update(this.movieLinksMap.get(this.movieOptionSelected)).subscribe( result => {
+        if (result['status'].includes('Success')) {
+          this.snackbar.open('Se notifico al sistema');
+        }
+        console.log(result);
+      });
+    } else {
+      this.snackbar.open('No se ha seleccionado niguna opcion.', '', {
+        duration: 3500, panelClass: ['error-snackbar']});
+    }
   }
 
   publishReview() {

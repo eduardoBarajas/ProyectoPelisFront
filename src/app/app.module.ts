@@ -21,12 +21,14 @@ import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-br
 import { GestureConfig } from '@angular/material';
 import { AuthModule } from './auth/auth.module';
 import { HttpConfigInterceptor } from './Interceptors/httpconfig.interceptor';
+import { LinksDialogComponent } from './dialogs/links-dialog/links-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponentComponent,
-    MovieDialogComponent
+    MovieDialogComponent,
+    LinksDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,7 @@ import { HttpConfigInterceptor } from './Interceptors/httpconfig.interceptor';
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3500, verticalPosition: 'bottom',
   entryComponents: [
-    MovieDialogComponent
+    MovieDialogComponent, LinksDialogComponent
   ],
   panelClass: ['success-snackbar']}}],
   bootstrap: [AppComponent]
