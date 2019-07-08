@@ -12,7 +12,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatButtonModule } from '@angular/material';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatPaginatorIntl } from '@angular/material';
 import { MovieDialogComponent } from './dialogs/movie-dialog/movie-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +22,7 @@ import { GestureConfig } from '@angular/material';
 import { AuthModule } from './auth/auth.module';
 import { HttpConfigInterceptor } from './Interceptors/httpconfig.interceptor';
 import { LinksDialogComponent } from './dialogs/links-dialog/links-dialog.component';
+import { MatPaginatorIntlMX } from './helpers/MatPaginatorIntlMX';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,9 @@ import { LinksDialogComponent } from './dialogs/links-dialog/links-dialog.compon
     AuthModule,
     AppRoutingModule
   ],
-  providers: [{provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig},
+  providers: [
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlMX},
+    {provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig},
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3500, verticalPosition: 'bottom',
   entryComponents: [

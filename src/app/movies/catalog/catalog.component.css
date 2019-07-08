@@ -1,0 +1,20 @@
+.expansion-header {
+    height: 48px;
+}
+
+@media (min-width: 320px) {
+    .expansion-header {
+        height: 85px!important;
+    }
+  }
+  
+  @media (min-width: 375px) {
+    .expansion-header {
+        height: 65px!important;
+    }
+  }
+  @media (min-width: 425px) {
+    .expansion-header {
+        height: 48px!important;
+    }
+  }

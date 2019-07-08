@@ -52,9 +52,9 @@ export class MoviesService {
     return this.httpClient.get<IResponse<string>>(`${environment.apiUrl}movies/getAllGenres`);
   }
 
-  getAllByFilter(genre: string, startYear: number, endYear: number, startRating: number, endRating: number) {
+  getAllByFilter(genre: string, startYear: number, endYear: number, startRating: number, endRating: number, name: string) {
     return this.httpClient.get(`${environment.apiUrl}movies/genre=${genre}/yearStart=${startYear}/yearEnd=${endYear}/` +
-      `ratingStart=${startRating}/ratingEnd=${endRating}`);
+      `ratingStart=${startRating}/ratingEnd=${endRating}/name=${name}`);
   }
 
   getAllByGenre(genre: string) {
@@ -87,5 +87,9 @@ export class MoviesService {
 
   deleteById(idMovie: number) {
     return this.httpClient.delete<IMovie>(`${environment.apiUrl}admin/movies/${idMovie}`);
+  }
+
+  getMovieNotations(idMovie: number, idUser: number) {
+    return this.httpClient.get<IResponse<string>>(`${environment.apiUrl}movies/${idMovie}/user/${idUser}`);
   }
 }

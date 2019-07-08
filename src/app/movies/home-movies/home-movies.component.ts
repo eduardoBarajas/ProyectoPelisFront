@@ -19,28 +19,22 @@ declare var $: any;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeMoviesComponent implements OnInit  {
-
+  currentYear = new Date().getFullYear();
   premierMovies: Movie[] = [];
-  actionMovies: Movie[] = [];
-  horrorMovies: Movie[] = [];
-  comedyMovies: Movie[] = [];
+  spotlightMovies: Movie[] = [];
   loadedcomplete = false;
   optionSelected = '';
   loaded = {terror: false, accion: false, comedia: false, premier: false, all: false};
-  images = ['https://images.sex.com/images/pinporn/2019/05/03/300/21088302.gif', 'https://images.sex.com/images/pinporn/2019/02/03/300/20635872.gif', 'https://images.sex.com/images/pinporn/2018/04/11/300/19356107.gif',
-    'https://images.sex.com/images/pinporn/2018/07/25/300/19762833.gif', 'https://images.sex.com/images/pinporn/2017/11/20/300/18681745.gif', 'https://images.sex.com/images/pinporn/2018/01/14/300/18946562.gif',
-    'https://images.sex.com/images/pinporn/2019/04/20/300/21015233.gif', 'https://images.sex.com/images/pinporn/2019/03/03/300/20769374.gif', 'https://images.sex.com/images/pinporn/2018/06/10/300/19586422.gif',
-    'https://images.sex.com/images/pinporn/2019/02/17/300/20706146.gif', 'https://images.sex.com/images/pinporn/2018/12/17/300/20372862.gif', 'https://images.sex.com/images/pinporn/2018/10/11/300/20074640.gif',
-    'https://images.sex.com/images/pinporn/2019/01/16/300/20539865.gif', 'https://images.sex.com/images/pinporn/2017/01/21/300/17253575.gif', 'https://images.sex.com/images/pinporn/2019/04/19/300/21013166.gif'];
 
   constructor(private moviesService: MoviesService, private snackbar: MatSnackBar, private router: Router,
-    private favoriteService: FavoritesService, private watchLaterService: WatchLaterService, private authService: AuthService) {
+              private favoriteService: FavoritesService, private watchLaterService: WatchLaterService, private authService: AuthService) {
   }
 
   ngOnInit() {
+    // Se checa si la sesion se encuentra iniciada o no, en el caso de que se cierre mientras se esta en el home se
+    // entra se regresa a la pestania de recientes.
     this.authService.checkIfLogin().subscribe( isLogged => {
       if (!isLogged) {
-        console.log('logout');
         this.setMovies('Recientes');
         $('#recents-tab').addClass('active');
         $('#populares-tab').removeClass('active');
@@ -48,9 +42,10 @@ export class HomeMoviesComponent implements OnInit  {
         $('#watchlater-tab').removeClass('active');
       }
     });
-    this.moviesService.getAllByYear(2019).subscribe( newMovies => {
+    this.moviesService.getAllByYear(this.currentYear).subscribe( newMovies => {
       if (newMovies['_embedded'] != null) {
-        this.initializeCarousel('premier', newMovies['_embedded']['movieDTOList']);
+        this.premierMovies = newMovies['_embedded']['movieDTOList'];
+        this.initializeCarousel('premier', this.premierMovies);
       } else {
         this.snackbar.open(`No se obtuvieron los estrenos`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
@@ -59,7 +54,6 @@ export class HomeMoviesComponent implements OnInit  {
       this.snackbar.open(`${err.message}`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
     });
-    this.setMovies('Recientes');
   }
 
   initializeCarousel(className: string, movies: Movie[]) {
@@ -108,9 +102,12 @@ export class HomeMoviesComponent implements OnInit  {
     $('.premier__nav--prev').on('click', e => {
       $('.premier__carousel, .home__bg').trigger('prev.owl.carousel');
     });
-    $('.spinner').fadeOut('slow');
+    $('#spinnerOne').fadeOut('slow');
     $('#layout').removeClass('invisible');
     $('#layout').addClass('fadeInLeft');
+    setTimeout( e => {
+      this.setMovies('Recientes');
+    }, 3000);
   }
 
   setMovies(action: string) {
@@ -194,6 +191,7 @@ export class HomeMoviesComponent implements OnInit  {
   }
 
   addMoviesToDOM(movies: IMovie[]) {
+    this.spotlightMovies = movies;
     $('#movie-content').empty();
     movies.forEach( movie => {
       let generos = '';
@@ -223,7 +221,7 @@ export class HomeMoviesComponent implements OnInit  {
     }
   }
 
-  movieClicked(event: MouseEvent) {
+  movieClicked(event: MouseEvent, tag: string) {
     if (event.target['href'] != null) {
       const linkArr = event.target['href'].split('/');
       linkArr.splice(0, 3);
@@ -238,6 +236,13 @@ export class HomeMoviesComponent implements OnInit  {
             link += `${linkArr[x]}/`;
           }
         }
+      }
+      if (tag.includes('premiers')) {
+        sessionStorage.setItem('currentMovieSelected', JSON.stringify(this.premierMovies.filter(
+          e => e.idMovie === +link.split('/')[2])[0]));
+      } else {
+        sessionStorage.setItem('currentMovieSelected', JSON.stringify(this.spotlightMovies.filter(
+          e => e.idMovie === +link.split('/')[2])[0]));
       }
       this.router.navigate([link]);
     }

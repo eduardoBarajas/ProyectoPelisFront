@@ -242,7 +242,7 @@ $(document).ready(function () {
 	/*==============================
 	Scroll bar
 	==============================*/
-	$('.scrollbar-dropdown').mCustomScrollbar({
+	/*$('.scrollbar-dropdown').mCustomScrollbar({
 		axis: "y",
 		scrollbarPosition: "outside",
 		theme: "custom-bar"
@@ -252,12 +252,12 @@ $(document).ready(function () {
 		axis: "y",
 		scrollbarPosition: "outside",
 		theme: "custom-bar2"
-	});
+	});*/
 
 	/*==============================
 	Morelines
 	==============================*/
-	$('.card__description--details').moreLines({
+	/*$('.card__description--details').moreLines({
 		linecount: 6,
 		baseclass: 'b-description',
 		basejsclass: 'js-description',
@@ -265,7 +265,7 @@ $(document).ready(function () {
 		buttontxtmore: "",
 		buttontxtless: "",
 		animationspeed: 400
-	});
+	});*/
 
 	/*==============================
 	Gallery
@@ -470,10 +470,11 @@ $(document).ready(function () {
 	// execute above function
 	initPhotoSwipeFromDOM('.gallery');
 
+	
 	/*==============================
 	Player
 	==============================*/
-	function initializePlayer() {
+	/*function initializePlayer() {
 		if ($('#player').length) {
 			const player = new Plyr('#player');
 		} else {
@@ -481,13 +482,13 @@ $(document).ready(function () {
 		}
 		return false;
 	}
-	$(window).on('load', initializePlayer());
+	$(window).on('load', initializePlayer());*/
 
 	/*==============================
 	Range sliders
 	==============================*/
 	/*1*/
-	function initializeFirstSlider() {
+	/*function initializeFirstSlider() {
 		if ($('#filter__years').length) {
 			var firstSlider = document.getElementById('filter__years');
 			noUiSlider.create(firstSlider, {
@@ -514,10 +515,10 @@ $(document).ready(function () {
 		}
 		return false;
 	}
-	$(window).on('load', initializeFirstSlider());
+	$(window).on('load', initializeFirstSlider());*/
 
 	/*2*/
-	function initializeSecondSlider() {
+	/*function initializeSecondSlider() {
 		if ($('#filter__imbd').length) {
 			var secondSlider = document.getElementById('filter__imbd');
 			noUiSlider.create(secondSlider, {
@@ -551,10 +552,10 @@ $(document).ready(function () {
 		}
 		return false;
 	}
-	$(window).on('load', initializeSecondSlider());
+	$(window).on('load', initializeSecondSlider());*/
 
 	/*3*/
-	function initializeThirdSlider() {
+	/*function initializeThirdSlider() {
 		if ($('#slider__rating').length) {
 			var thirdSlider = document.getElementById('slider__rating');
 			noUiSlider.create(thirdSlider, {
@@ -580,5 +581,5 @@ $(document).ready(function () {
 		}
 		return false;
 	}
-	$(window).on('load', initializeThirdSlider());
+	$(window).on('load', initializeThirdSlider());*/
 });

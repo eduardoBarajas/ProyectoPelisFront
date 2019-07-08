@@ -1,13 +1,10 @@
-<div class="container-fluid animated slow" [ngClass]="{'fadeIn': contentLoaded}" *ngIf="contentLoaded">
-  <div class="row">
-    <div class="col-md-2">
-
-    </div>
-    <div class="col-md-10">
+<div class="container-fluid">
+  <div class="row animated slow" *ngIf="contentLoaded" [ngClass]="{'fadeIn': contentLoaded, 'fadeOut': !contentLoaded}">
+    <div class="col-12 col-md-12 col-xl-12">
       <!-- details -->
       <section class="section">
         <!-- details content -->
-        <div class="container">
+        <div class="container" *ngIf="movie !== null">
           <div class="row">
             <!-- title -->
             <div class="col-12">
@@ -70,7 +67,7 @@
             <div class="col-12 col-xl-6 movie-player" *ngIf="movieLinks.size > 0; else NoLinks">
               <div class="row">
                 <div class="col-md-6">
-                  <mat-form-field color="accent">
+                  <mat-form-field color="accent" class="w-75">
                     <mat-label>Selecciona una opcion</mat-label>
                     <mat-select [(value)]="movieOptionSelected" panelClass="mat-select-panel">
                       <mat-option style="color: whitesmoke;" value="{{link}}" *ngFor="let link of movieLinksKeys">
@@ -100,21 +97,21 @@
       <!-- end details -->
     </div>
   </div>
-  <div class="row">
+  <div class="row my-5 animated slow" *ngIf="secondaryContentLoaded" [ngClass]="{'fadeIn': secondaryContentLoaded, 'fadeOut': !secondaryContentLoaded}">
     <div class="col-md-12">
       <div class="col-md-12">
         <div class="sportlight-section dark" style="background-color: transparent;">
-          <div class="container">
+          <div class="container px-0">
             <mat-divider class="w-75 my-1" style="border-top-width: 3px;"></mat-divider>
-            <nav class="sportlight-tab dark mb-3" style="background-color: transparent;">
+            <nav class="sportlight-tab dark my-3" style="background-color: transparent;">
               <div class="nav nav-tabs" role="tablist">
-                  <a class="option-link active" data-toggle="tab" href="#tab-1" role="tab"
-                  aria-controls="tab-1" aria-selected="true">Comentarios</a>
-                  <a class="option-link" data-toggle="tab" href="#tab-2" role="tab"
-                  aria-controls="tab-2" aria-selected="false">Reviews</a>
+                <a class="option-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1"
+                  aria-selected="true">Comentarios</a>
+                <a class="option-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2"
+                  aria-selected="false">Reviews</a>
               </div>
             </nav>
-            <div class="container">
+            <div class="container px-0">
               <div class="row">
                 <div class="col-12 col-lg-8 col-xl-8">
                   <!-- content tabs -->
@@ -135,7 +132,8 @@
                                   {{c.comment}}
                                 </p>
                                 <textarea *ngIf="commentSelected.idComment === c.idComment" [(ngModel)]="c.comment"
-                                  id="text" name="text" class="form__textarea" placeholder="Agregar Comentario"></textarea>
+                                  id="text" name="text" class="form__textarea"
+                                  placeholder="Agregar Comentario"></textarea>
                                 <div class="comments__actions">
                                   <div class="comments__rate" *ngIf="checkCommentAuth(c)">
                                     <button (click)="deleteComment(c)" type="button">Eliminar<i
@@ -153,7 +151,9 @@
                             <form class="form">
                               <textarea [(ngModel)]="comment.comment" id="text" name="text" class="form__textarea"
                                 placeholder="Add comment"></textarea>
-                              <button type="button" (click)="publishComment()" style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);" class="form__btn">Publicar</button>
+                              <button type="button" (click)="publishComment()"
+                                style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);"
+                                class="form__btn">Publicar</button>
                             </form>
                           </div>
                         </div>
@@ -213,8 +213,8 @@
                               <mat-slider class="w-50" [max]="5" [min]="0" [step]="0.1" [thumbLabel]="true"
                                 [(ngModel)]="review.grade" [ngModelOptions]="{standalone: true}">
                               </mat-slider>
-                              <button mat-flat-button cdkFocusInitial class="mx-2"
-                                (click)="publishReview()" style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);">Publicar</button>
+                              <button mat-flat-button cdkFocusInitial class="mx-2" (click)="publishReview()"
+                                style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);">Publicar</button>
                             </form>
                           </div>
                         </div>
@@ -239,12 +239,12 @@
                       <div class="card">
                         <div class="card__cover">
                           <img src="{{similar.poster}}" alt="">
-                          <a routerLink="/movie/{{similar.idMovie}}" class="card__play">
+                          <a (click)="similarMovieSelected(similar)" class="card__play">
                             <i class="icon ion-ios-play"></i>
                           </a>
                         </div>
                         <div class="card__content">
-                          <h3 class="card__title"><a routerLink="/movie/{{similar.idMovie}}">{{similar.name}}</a></h3>
+                          <h3 class="card__title"><a (click)="similarMovieSelected(similar)">{{similar.name}}</a></h3>
                           <span class="card__category">
                             <a
                               *ngFor="let genre of similar.genres.split(',').slice(0, similar.genres.split(',').length - 1)">{{genre}}</a>

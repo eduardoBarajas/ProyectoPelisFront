@@ -3,6 +3,7 @@ import { Movie } from 'src/app/entities/Movie';
 import { MoviesService } from 'src/app/services/movies/movies.service';
 import { MatSnackBar, PageEvent, MatPaginator } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-catalog',
@@ -21,12 +22,12 @@ export class CatalogComponent implements OnInit {
   fadeInUpAnimation = false;
   inFilterSearch = false;
   genresListObtained = false;
-  filterData = {genre: '', startYear: 0, endYear: 2019, startRating: 0, endRating: 5};
+  filterData = {genre: '', startYear: 0, endYear: 2019, startRating: 0, endRating: 5, name: ''};
 
-  constructor(public movieService: MoviesService, private snackbar: MatSnackBar) { }
+  constructor(public movieService: MoviesService, private snackbar: MatSnackBar, private router: Router) { }
 
   ngOnInit() {
-    this.filterData = {genre: 'Todos', startYear: 2019, endYear: 2019, startRating: 0, endRating: 5};
+    this.filterData = {genre: 'Todos', startYear: 2019, endYear: 2019, startRating: 0, endRating: 5, name: ''};
     this.getMoviesByFilter();
   }
 
@@ -62,7 +63,7 @@ export class CatalogComponent implements OnInit {
   getMoviesByFilter() {
     if (this.validateFilter()) {
       this.movieService.getAllByFilter(this.filterData.genre, this.filterData.startYear, this.filterData.endYear,
-        this.filterData.startRating, this.filterData.endRating).subscribe( response => {
+        this.filterData.startRating, this.filterData.endRating, this.filterData.name).subscribe( response => {
           if (response['_embedded'] != null) {
             this.movieList = response['_embedded']['movieDTOList'];
             this.movieList.forEach( movie => {
@@ -164,5 +165,10 @@ export class CatalogComponent implements OnInit {
     if (!this.genresListObtained) {
       this.getGenresList();
     }
+  }
+
+  movieSelected(movie: Movie) {
+    sessionStorage.setItem('currentMovieSelected', JSON.stringify(movie));
+    this.router.navigate([`/movie/${movie.idMovie}`]);
   }
 }
