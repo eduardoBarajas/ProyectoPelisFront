@@ -27,11 +27,20 @@ export class EditMovieComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   dataSource: MatTableDataSource<IMovie>;
-  columnsToDisplay = ['idMovie', 'name', 'year', 'grade', 'length', 'genres', 'modificationDate'];
+  columnsToDisplay = ['idMovie', 'name', 'year', 'grade', 'length', 'genres'];
+  columnsTraduction = new Map<string, string>();
   expandedElement: IMovie | null;
   loaded = false;
+  pendientRequest = false;
 
-  constructor(private moviesService: MoviesService, private snackbar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(private moviesService: MoviesService, private snackbar: MatSnackBar, private dialog: MatDialog) { 
+    this.columnsTraduction.set('idMovie', 'id');
+    this.columnsTraduction.set('name', 'Nombre');
+    this.columnsTraduction.set('year', 'Año');
+    this.columnsTraduction.set('grade', 'Rating');
+    this.columnsTraduction.set('length', 'Duracion');
+    this.columnsTraduction.set('genres', 'Generos');
+  }
 
   ngOnInit() {
     this.moviesService.getAll().subscribe( {
@@ -63,22 +72,29 @@ export class EditMovieComponent implements OnInit {
           CREO QUE ESTO DE BORRAR CON DOBLE LLAMADA A LA API ESTA DE MAS, 
           DEBERIA INVESTIGAR SI ES VIABLE UTILIZANDO UN TRIGGER O CON LA ELIMINACION CON CASCADA
         */
-        this.moviesService.deleteById(movie.idMovie).subscribe( responseDelete => {
-          this.snackbar.open(`${responseDelete.message}`);
-          this.dataSource.data.splice(this.dataSource.data.indexOf(mov), 1);
-          this.dataSource = new MatTableDataSource(this.dataSource.data);
-          this.dataSource.paginator = this.paginator;
-        }, (error: HttpErrorResponse) => {
-          this.snackbar.open(`${error.message}`, '', {
-            duration: 3500, panelClass: ['error-snackbar']});
-        });
+        if (!this.pendientRequest) {
+          this.pendientRequest = true;
+          this.moviesService.deleteById(movie.idMovie).subscribe( responseDelete => {
+            this.snackbar.open(`${responseDelete.message}`);
+            this.dataSource.data.splice(this.dataSource.data.indexOf(mov), 1);
+            this.dataSource = new MatTableDataSource(this.dataSource.data);
+            this.dataSource.paginator = this.paginator;
+            this.pendientRequest = false;
+          }, (error: HttpErrorResponse) => {
+            this.pendientRequest = false;
+            this.snackbar.open(`${error.message}`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
+          });
+        } else {
+          this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+        }
       }
     });
   }
 
   openMovieLinks(mov: IMovie) {
     const linksDialog = this.dialog.open(LinksDialogComponent, {
-      width: '500px', data: {idMovie: mov.idMovie}
+      width: '500px', data: {idMovie: mov.idMovie, name: mov.name, year: mov.year}
     });
   }
 
@@ -89,20 +105,27 @@ export class EditMovieComponent implements OnInit {
     });
     movieDialog.afterClosed().subscribe( movie => {
       if (movie != null) {
-        this.moviesService.update(movie).subscribe({
-          next: (response => {
-            if (response.status === 'Success') {
-              assignIMovieToIMovie(response, mov);
-              this.snackbar.open(`${response.message}`);
-            } else {
-              this.snackbar.open(`${response.message}`, '', {
+        if (!this.pendientRequest) {
+          this.pendientRequest = true;
+          this.moviesService.update(movie).subscribe({
+            next: (response => {
+              if (response.status === 'Success') {
+                assignIMovieToIMovie(response, mov);
+                this.snackbar.open(`${response.message}`);
+              } else {
+                this.snackbar.open(`${response.message}`, '', {
+                  duration: 3500, panelClass: ['error-snackbar']});
+              }
+              this.pendientRequest = false;
+            }), error: ((err: HttpErrorResponse) => {
+              this.pendientRequest = false;
+              this.snackbar.open(`${err.message}`, '', {
                 duration: 3500, panelClass: ['error-snackbar']});
-            }
-          }), error: ((err: HttpErrorResponse) => {
-            this.snackbar.open(`${err.message}`, '', {
-              duration: 3500, panelClass: ['error-snackbar']});
-          })
-        });
+            })
+          });
+        } else {
+          this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+        }
       }
     });
   }

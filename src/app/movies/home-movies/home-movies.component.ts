@@ -22,7 +22,6 @@ export class HomeMoviesComponent implements OnInit  {
   currentYear = new Date().getFullYear();
   premierMovies: Movie[] = [];
   spotlightMovies: Movie[] = [];
-  loadedcomplete = false;
   optionSelected = '';
   loaded = {terror: false, accion: false, comedia: false, premier: false, all: false};
 
@@ -111,6 +110,8 @@ export class HomeMoviesComponent implements OnInit  {
   }
 
   setMovies(action: string) {
+    $('.loader').removeClass('fadeOut');
+    $('.loader').addClass('fadeIn');
     $('#movie-content').removeClass('bounceInUp');
     switch (action) {
       case 'Recientes': {
@@ -211,6 +212,8 @@ export class HomeMoviesComponent implements OnInit  {
       }
       $(`#movie-content`).append(node);
     });
+    $('.loader').removeClass('fadeIn');
+    $('.loader').addClass('fadeOut');
     $('#movie-content').addClass('bounceInUp');
   }
 

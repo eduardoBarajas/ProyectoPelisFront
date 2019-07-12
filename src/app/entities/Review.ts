@@ -9,6 +9,12 @@ export class Review {
     idUser: number;
     idMovie: number;
 
+    constructor() {
+        this.review = '';
+        this.reviewTitle = '';
+        this.grade = 0.0;
+    }
+
     setReview(review: Review) {
         this.idReview = review.idReview;
         this.grade = review.grade;

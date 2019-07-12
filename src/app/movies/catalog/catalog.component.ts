@@ -4,6 +4,9 @@ import { MoviesService } from 'src/app/services/movies/movies.service';
 import { MatSnackBar, PageEvent, MatPaginator } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-catalog',
@@ -11,6 +14,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./catalog.component.css']
 })
 export class CatalogComponent implements OnInit {
+
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+    .pipe(
+      map(result => result.matches)
+    );
+
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   movieList: Movie[] = [];
   genresList = [];
@@ -22,9 +31,11 @@ export class CatalogComponent implements OnInit {
   fadeInUpAnimation = false;
   inFilterSearch = false;
   genresListObtained = false;
+  loaded = false;
   filterData = {genre: '', startYear: 0, endYear: 2019, startRating: 0, endRating: 5, name: ''};
 
-  constructor(public movieService: MoviesService, private snackbar: MatSnackBar, private router: Router) { }
+  constructor(private breakpointObserver: BreakpointObserver, public movieService: MoviesService, private snackbar: MatSnackBar,
+              private router: Router) { }
 
   ngOnInit() {
     this.filterData = {genre: 'Todos', startYear: 2019, endYear: 2019, startRating: 0, endRating: 5, name: ''};
@@ -79,9 +90,7 @@ export class CatalogComponent implements OnInit {
                   genres += `${movieGenres[index]},`;
                 }
               }
-              console.log(`BEFORE--------------------------Movie: ${movie.name}, Genres: ${movie.genres}`);
               movie.genres = genres.slice(0, genres.length - 1);
-              console.log(`Movie: ${movie.name}, Genres: ${movie.genres}`);
             });
             if (this.genresListObtained) {
               this.inFilterSearch = !this.inFilterSearch;
@@ -89,6 +98,9 @@ export class CatalogComponent implements OnInit {
             this.setPageEvent(this.movieList);
             this.paginator.firstPage();
             this.pageChange(this.pageEvent);
+            if (!this.loaded) {
+              this.loaded = true;
+            }
           } else {
             this.snackbar.open(`No se encontraron peliculas con esas especificaciones`, '', {
               duration: 3500, panelClass: ['error-snackbar']});

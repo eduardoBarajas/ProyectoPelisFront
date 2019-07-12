@@ -6,6 +6,7 @@ import { IResponse } from 'src/app/entities/IResponse';
 import { IServerMovieList } from 'src/app/entities/IServerMovieList';
 // import { environment } from 'src/environments/environment.prod';
 import { environment } from 'src/environments/environment';
+import { MovieUniqueCheck } from 'src/app/entities/MovieUniqueCheck';
 
 
 @Injectable({
@@ -13,11 +14,10 @@ import { environment } from 'src/environments/environment';
 })
 export class MoviesService {
 
-  /*httpOptions = {
+  otherHttpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'})
   };
-  */
- 
+
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json', Accept: 'application/json'})
   };
@@ -33,7 +33,8 @@ export class MoviesService {
   }
 
   getAllFromMovieServer(year: number) {
-    return this.httpClient.get<IServerMovieList>(`${environment.serverUrl}movies/${year}`);
+    // return this.httpClient.get<IServerMovieList>(`${environment.serverUrl}movies/${year}`);
+    return this.httpClient.get<IServerMovieList>(`https://movies-server.herokuapp.com/movies/${year}`);
   }
 
   getAll() {
@@ -74,11 +75,15 @@ export class MoviesService {
     return this.httpClient.get(`${environment.apiUrl}movies/trending`);
   }
 
-  findIfAlreadyInDBWithNameAndYear(name: string, year: number) {
+  /*findIfAlreadyInDBWithNameAndYear(name: string, year: number) {
     if (name.includes('/')) {
       name = name.replace('/', '-slash-');
     }
     return this.httpClient.get<IResponse<IMovie>>(`${environment.apiUrl}movies/name=${encodeURIComponent(name)}/year=${year}`);
+  }*/
+
+  findIfAlreadyInDBWithNameAndYear(movies: MovieUniqueCheck[]) {
+    return this.httpClient.post<IResponse<IMovie>>(`${environment.apiUrl}movies/check`, movies, this.httpOptions);
   }
 
   update(movie: Movie) {
@@ -91,5 +96,21 @@ export class MoviesService {
 
   getMovieNotations(idMovie: number, idUser: number) {
     return this.httpClient.get<IResponse<string>>(`${environment.apiUrl}movies/${idMovie}/user/${idUser}`);
+  }
+
+  getMoviesFromGenreWithLimit(genre: string, limit: number) {
+    return this.httpClient.get(`${environment.apiUrl}movies/genre=${genre}/limit=${limit}`);
+  }
+
+  getMovieInteractions(idMovie: number) {
+    return this.httpClient.get(`${environment.apiUrl}movies/interactions/${idMovie}`);
+  }
+
+  getFavoriteMoviesByUserId(idUser: number) {
+    return this.httpClient.get<IResponse<Movie>>(`${environment.apiUrl}movies/favorites/user=${idUser}`);
+  }
+
+  getWatchLaterMoviesByUserId(idUser: number) {
+    return this.httpClient.get<IResponse<Movie>>(`${environment.apiUrl}movies/watchLater/user=${idUser}`);
   }
 }

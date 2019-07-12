@@ -1,10 +1,10 @@
 <mat-spinner style="position: fixed; left: 45%;top: 45%;" *ngIf="!loaded"></mat-spinner>
-<div class="container h-100" [ngClass]="{'invisible': !loaded}">
+<div class="container h-100 mb-5" style="margin-top: 5rem;" [ngClass]="{'invisible': !loaded}">
   <div class="row">
-    <div class="col-md-6 my-4">
+    <div class="col-6 col-md-6 my-4">
       <h5 class="widget_title">Agregar Peliculas</h5>
     </div>
-    <div class="col-md-3 my-4">
+    <div class="col-6 col-md-3 my-4">
       <button class="w-100" mat-flat-button color="primary" (click)="selectAll()" *ngIf="dataSource.data.length > 0">Seleccionar Todo</button>
     </div>
     <div class="col-md-2 my-3">
@@ -22,14 +22,14 @@
         <div></div><div></div><div></div><div></div>
       </div>
     </div>
-    <div class="col-md-12 my-4">
+    <div class="col-md-12 my-4 animated slow" [ngClass]="{'fadeOut': gettingMovies, 'fadeIn': !gettingMovies}">
       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
         <!-- This is the tree node template for leaf nodes -->
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
           <div class="container ml-0">
             <div class="row">
               <div class="col-md-3" *ngFor="let field of movie_node_fields">
-                <mat-form-field>
+                <mat-form-field class="w-100">
                   <input [disabled]="movie_node_blocked_fields.includes(field)" matInput [(ngModel)]="flatNodeMap.get(node)[field]"  placeholder="{{field}}">
                 </mat-form-field>
               </div>

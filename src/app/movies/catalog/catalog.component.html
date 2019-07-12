@@ -1,4 +1,4 @@
-<div class="container-fluid my-5" style="min-height: 100vh;">
+<div class="container-fluid my-5" [ngClass]="{'invisible': !loaded, 'animated slower fadeIn': loaded}" style="min-height: 100vh;">
   <div class="row">
     <div class="col-md-2">
     </div>
@@ -17,13 +17,13 @@
                             Filtro
                           </mat-panel-title>
                           <mat-panel-description>
-                            Haz click aqui para aplicar un filtro y mejorar tu busqueda.
+                            Aplicar un filtro a la busqueda.
                             <mat-icon>search</mat-icon>
                           </mat-panel-description>
                         </mat-expansion-panel-header>
                         <ng-template matExpansionPanelContent>
                           <div class="row my-2">
-                            <div class="col-md-3">
+                            <div class="col-md-3 mx-2">
                               <mat-form-field class="w-100">
                                 <mat-label>Categoria</mat-label>
                                 <mat-select [(ngModel)]="filterData.genre"
@@ -34,7 +34,7 @@
                                 </mat-select>
                               </mat-form-field>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 mx-2">
                               <mat-label >Desde Año:</mat-label>
                                 <mat-slider class="w-100"
                                     [max]="2019"
@@ -43,7 +43,7 @@
                                     [(ngModel)]="filterData.startYear">
                                 </mat-slider>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 mx-2">
                                 <mat-label>Hasta Año:</mat-label>
                                   <mat-slider class="w-100"
                                       [max]="2019"
@@ -52,7 +52,7 @@
                                       [(ngModel)]="filterData.endYear">
                                   </mat-slider>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 mx-2">
                                 <mat-label>Desde Rating:</mat-label>
                                   <mat-slider class="w-100"
                                       [max]="5"
@@ -62,7 +62,7 @@
                                       [(ngModel)]="filterData.startRating">
                                   </mat-slider>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 mx-2">
                                 <mat-label>Hasta Rating:</mat-label>
                                   <mat-slider
                                       class="w-100"
@@ -74,15 +74,15 @@
                                   </mat-slider>
                             </div>
                           </div>
-                          <mat-action-row>
-                            <div class="row w-100">
-                              <div class="col-md-8">
-                                <mat-form-field class="w-75" appearance="outline">
+                          <mat-action-row class="px-0">
+                            <div class="row w-100 mr-4">
+                              <div class="col-md-8 col-12">
+                                <mat-form-field class="name-width" appearance="outline">
                                   <mat-label>Nombre De La Pelicula</mat-label>
                                   <input [(ngModel)]="filterData.name" matInput placeholder="EJ. 'Masacre de texas 3' o solo 'Masacre'">
                                 </mat-form-field>
                               </div>
-                              <div class="col-md-4">
+                              <div class="col-md-4" style="margin-top: .3rem;">
                                   <button class="filter__btn" style="background-image: linear-gradient(90deg, #77ff55 0%, #28a745 100%);" (click)="getMoviesByFilter()" type="button">Aplicar Filtro</button>
                               </div>
                             </div>
@@ -94,7 +94,7 @@
                     <!-- end filter btn -->
                   </div>
               <div class="col-12">
-                <mat-paginator  color="accent" style="background-color: #4CAF50" [length]="movieList.length" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" (page)="pageChange($event)" showFirstLastButtons>
+                <mat-paginator  color="accent" style="background-color: #4CAF50" [length]="movieList.length" [hidePageSize]="(isHandset$ | async)" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" (page)="pageChange($event)" showFirstLastButtons>
                 </mat-paginator>
               </div>
             </div>

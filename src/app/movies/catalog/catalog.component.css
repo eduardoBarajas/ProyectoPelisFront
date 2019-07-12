@@ -2,9 +2,16 @@
     height: 48px;
 }
 
+.name-width {
+  width: 75%;
+}
+
 @media (min-width: 320px) {
     .expansion-header {
         height: 85px!important;
+    }
+    .name-width {
+      width: 100%;
     }
   }
   
@@ -12,9 +19,23 @@
     .expansion-header {
         height: 65px!important;
     }
+    .name-width {
+      width: 100%;
+    }
   }
   @media (min-width: 425px) {
     .expansion-header {
         height: 48px!important;
+    }
+    .name-width {
+      width: 100%;
+    }
+  }
+  @media (min-width: 768px) {
+    .expansion-header {
+        height: 48px!important;
+    }
+    .name-width {
+      width: 100%;
     }
   }

@@ -132,10 +132,60 @@
   border-color: transparent;
 }
 
-  @media (min-width: 360px) {
+  /*Son estilos para utilizar la lista virtual en modo horizontal*/
+  .cdk-virtual-scroll-data-source-vl .vl-viewport {
+    max-height: 120vh;
+    width: 100%;
+  }
+
+  .reviews-list {
+    overflow-y: auto;
+    max-height: 70vh;
+  }
+
+  @media (min-width: 320px) {
     .btn_movie_action {
         width: 75%!important;;
     }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      /*max-height: 70vh;*/
+      height: 300px;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 70vh;
+    }  
+  }
+
+  @media (min-width: 375px) {
+    .btn_movie_action {
+        width: 75%!important;;
+    }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      /*max-height: 70vh;*/
+      height: 320px;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 70vh;
+    }  
+  }
+
+  @media (min-width: 425px) {
+    .btn_movie_action {
+        width: 75%!important;;
+    }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      /*max-height: 70vh;*/
+      height: 320px;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 70vh;
+    }  
   }
   
   @media (min-width: 576px) {
@@ -143,7 +193,41 @@
         width: 100%!important;
         font-size: xx-small;
     }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 320px;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 70vh;
+    }  
+    .mat-button-wrapper {
+      font-size: 4rem;
+    }
   }
+
+  @media (min-width: 640px) {
+    .description_size {
+      max-height: 40vh;
+      overflow:auto;
+    }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 320px;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 730px) {
+    .description_size {
+      max-height: 40vh;
+      overflow:auto;
+    }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 320px;
+      width: 100%;
+    }
+  }
+
   @media (min-width: 768px) {
     .btn_movie_action {
         width: 100%!important;;
@@ -152,17 +236,48 @@
         max-height: 20vh;
         overflow:auto;
     }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 320px;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 70vh;
+    }
+  
   }
+
+  @media (min-width: 820px) {
+    .description_size {
+      max-height: 55vh;
+      overflow:auto;
+    }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 320px;
+      width: 100%;
+    }
+  }
+
   @media (min-width: 1024px) {
     .btn_movie_action {
         width: 100%!important;;
     }
     .description_size {
-        max-height: 15vh;
+        max-height: 40vh;
         overflow:auto;
     }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 120vh;
+      max-height: 120vh;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 70vh;
+    }
+  
   }
-  @media (min-width: 1200px) {
+  @media (min-width: 1100px) {
     .btn_movie_action {
         width: 100%!important;;
     }
@@ -170,4 +285,55 @@
         max-height: 30vh;
         overflow:auto;
     }
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 120vh;
+      max-height: 120vh;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+  
   }
+  @media (min-width: 1280px) {
+    .cdk-virtual-scroll-data-source-vl .vl-viewport {
+      height: 135vh;
+      max-height: 135vh;
+      width: 100%;
+    }
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 120vh;
+    }
+  
+  }
+  @media (min-width: 1440px) {
+    .description_size {
+      max-height: 35vh;
+      overflow:auto;
+    }
+  }
+  @media (min-width: 2560px) {
+    .reviews-list {
+      overflow-y: auto;
+      max-height: 40vh;
+    }
+  
+  }
+
+/*
+.cdk-virtual-scroll-data-source-vl .vl-viewport .cdk-virtual-scroll-content-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+*/
+.cdk-virtual-scroll-data-source-vl .vl-item {
+  width: 100px;
+  height: 100%;
+  writing-mode: vertical-lr;
+}
+
+.my-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  background-color: green; }

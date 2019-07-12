@@ -1,3 +1,55 @@
-<p>
-  my-movies works!
-</p>
+<div class="container-fluid mb-5" style="min-height: 100vh;margin-top: 5rem!important;">
+    <div class="row">
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-8">
+        <!-- end filter -->
+        <mat-tab-group (selectedTabChange)="tabChanged()" class="my-1 mx-4">
+          <mat-tab label="Favoritas"></mat-tab>
+          <mat-tab label="Ver Mas Tarde"></mat-tab>
+        </mat-tab-group>
+        <div style="width:100%;height:100%" *ngIf="!contentLoaded" class="my-4 mx-auto lds-cube animated slow" [ngClass]="{'fadeOut': contentLoaded, 'fadeIn': !contentLoaded}">
+            <div></div><div></div><div></div><div></div>
+        </div>
+        <!-- catalog -->
+        <div class="catalog" [ngClass]="{'invisible': !contentLoaded}">
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <mat-paginator  color="accent" style="background-color: #4CAF50" [length]="movieList.length" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" (page)="pageChange($event)" showFirstLastButtons>
+                  </mat-paginator>
+                </div>
+              </div>
+              <div class="row">
+                <!-- card -->
+                <div class="col-6 col-sm-4 col-lg-3 col-xl-3 my-1 animated fast" *ngFor="let index of indexes" [ngClass]="{'fadeInUp': fadeInUpAnimation, 'fadeIn': fadeInAnimation, 'fadeOutRight': backAnimation, 'fadeOutLeft': nextAnimation}">
+                  <div class="card">
+                    <div class="card__cover">
+                      <img src="{{movieList[index].poster}}" alt="">
+                      <a (click)="movieSelected(movieList[index])" class="card__play">
+                        <i class="icon ion-ios-play"></i>
+                      </a>
+                    </div>
+                    <div class="card__content">
+                      <h3 class="card__title"><a (click)="movieSelected(movieList[index])">{{movieList[index].name}}</a></h3>
+                      <span class="card__category">
+                        <a *ngFor="let genre of movieList[index].genres.split(',')">{{genre}}</a>
+                      </span>
+                      <span class="card__rate"><i class="icon ion-ios-star"></i>{{movieList[index].grade}}</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- end card -->
+    
+                <!-- paginator -->
+                
+                
+                <!-- end paginator -->
+              </div>
+            </div>
+          </div>
+          <!-- end catalog -->
+      <div class="col-md-2">
+      </div>
+    </div>
+  </div>

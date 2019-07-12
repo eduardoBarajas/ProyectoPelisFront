@@ -1,6 +1,9 @@
 import { IMovie } from './IMovie';
 
-export class Movie {
+export class Movie implements IMovie {
+    movieLinks: string[];
+    status: string;
+    message: string;
     idMovie: number;
     name: string;
     originalName: string;

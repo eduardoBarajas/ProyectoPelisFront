@@ -4,7 +4,6 @@ import { MovieDetailsComponent } from './movie-details/movie-details.component';
 import { AddMovieComponent } from './add-movie/add-movie.component';
 import { EditMovieComponent } from './edit-movie/edit-movie.component';
 import { HomeMoviesComponent } from './home-movies/home-movies.component';
-import { SearchMoviesComponent } from './search-movies/search-movies.component';
 import { MoviesRoutingModule } from './movies-routing.module';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatIconModule} from '@angular/material/icon';
@@ -26,10 +25,10 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MyMoviesComponent } from './my-movies/my-movies.component';
 import { LinksDialogComponent } from '../dialogs/links-dialog/links-dialog.component';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
-  declarations: [MovieDetailsComponent, AddMovieComponent, EditMovieComponent, HomeMoviesComponent,
-    SearchMoviesComponent, CatalogComponent, MyMoviesComponent],
+  declarations: [MovieDetailsComponent, AddMovieComponent, EditMovieComponent, HomeMoviesComponent, CatalogComponent, MyMoviesComponent],
   imports: [
     CommonModule,
     MatTreeModule,
@@ -39,6 +38,7 @@ import { LinksDialogComponent } from '../dialogs/links-dialog/links-dialog.compo
     MatToolbarModule,
     MatDividerModule,
     MatCheckboxModule,
+    MatTabsModule,
     MatInputModule,
     MatSelectModule,
     MatTableModule,

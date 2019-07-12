@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material';
 import { MoviesService } from 'src/app/services/movies/movies.service';
 import { LinksService } from 'src/app/services/links/links.service';
 import { MovieLinks } from 'src/app/entities/MovieLinks';
+import { MovieUniqueCheck } from 'src/app/entities/MovieUniqueCheck';
 
 interface TreeNode {
   name: string;
@@ -50,6 +51,7 @@ export class AddMovieComponent implements OnInit {
   gettingMovies = false;
   // esta variable determina si se muestra el spinner cuando se agregan las peliculas
   uploadingMovies = false;
+  pendientRequest = false;
   years = [];
 // tslint:disable-next-line: variable-name
   year_selected = 2019;
@@ -85,9 +87,11 @@ export class AddMovieComponent implements OnInit {
     this.treeFlattener = new MatTreeFlattener(this.transformer, node => node.level, node => node.expandable, node => node.children);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
     // items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
-    for (let i = 1925; i <= 2019; i++) {
+    for (let i = 1925; i <= new Date().getFullYear(); i++) {
       this.years.push(i);
     }
+    this.year_selected = this.years[this.years.length - 1];
+    this.yearSelected();
     this.loaded = true;
   }
 
@@ -98,22 +102,33 @@ export class AddMovieComponent implements OnInit {
     recibe como parametro un nodo anidado(FlatNode).
   */
   movieSelected(node: FlatNode) {
-    if (this.moviesSelected.has(node)) {
-      this.moviesSelected.delete(node);
-    } else {
-      this.moviesSelected.set(node, this.flatNodeMap.get(node));
-      this.moviesService.findIfAlreadyInDBWithNameAndYear(this.flatNodeMap.get(node).children[0].name,
-        this.flatNodeMap.get(node).children[0].year).subscribe({
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      if (this.moviesSelected.has(node)) {
+        this.moviesSelected.delete(node);
+        this.pendientRequest = false;
+      } else {
+        this.moviesSelected.set(node, this.flatNodeMap.get(node));
+        const movie: MovieUniqueCheck[] = [];
+        movie.push(new MovieUniqueCheck(this.flatNodeMap.get(node).children[0].name,
+        this.flatNodeMap.get(node).children[0].year));
+        this.moviesService.findIfAlreadyInDBWithNameAndYear(movie).subscribe({
           next: (response => {
-            if (response.status === 'Success') {
+            if (response.status === 'MoviesFound') {
               this.snackbar.open(response.message);
             }
+            console.log(response);
+            this.pendientRequest = false;
           }),
           error: ((err: HttpErrorResponse) => {
+            this.pendientRequest = false;
             this.snackbar.open(`${err.message}`, '', {
               duration: 3500, panelClass: ['error-snackbar']});
           })
         });
+      }
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
     }
   }
 
@@ -124,71 +139,47 @@ export class AddMovieComponent implements OnInit {
         duration: 3000, panelClass: ['error-snackbar']});
       return;
     }
-    this.uploadingMovies = !this.uploadingMovies;
-    const movies = [];
-    this.moviesSelected.forEach( movieNode => {
-      const movie = new Movie();
-      movie.cast = movieNode.children[0].cast;
-      movie.creationDate = movieNode.children[0].modificationDate;
-      movie.genres = movieNode.children[0].genres;
-      movie.grade = 5;
-      movie.length = movieNode.children[0].length;
-      movie.originalName = movieNode.children[0].originalName;
-      movie.poster = movieNode.children[0].poster;
-      movie.synopsis = movieNode.children[0].synopsis;
-      movie.tags = movieNode.children[0].tags;
-      movie.name = movieNode.children[0].name;
-      movie.year = movieNode.children[0].year;
-      movie.modificationDate = movieNode.children[0].modificationDate;
-      movies.push(movie);
-    });
-    // con operation_finished se tendra un control de las dos operaciones que se realizan a continuacion,
-    // se usa la propiedad de message para ir concatenando los errores en caso de haber, y el time_visible para
-    // agrandar el tiempo de vista para que se pueda leer todo el mensaje.
-    this.moviesService.saveAll(movies).subscribe({
-      next: (response => {
-        if (response.status.includes('Success')) {
-          // se crea la lista que contendra todos los links de las peliculas que se agregaran.
-          const links_movies_list = Array<MovieLinks>();
-          response.responses.forEach( movie => {
-            this.TREE_DATA.forEach( node => {
-              // si el nombre de la pelicula en los nodos es igual a las peliculas recien agregadas se procede
-              // a obtener sus links para actualizarlos.
-              if (node.children[0].name.includes(movie.name)) {
-                node.children[0].movieLinks.forEach( link => {
-                  let movie_link = new MovieLinks();
-                  movie_link.idMovie = movie.idMovie;
-                  movie_link.link = link;
-                  links_movies_list.push(movie_link);
-                });
-              }
-            });
-          });
-          // en este punto ya se tienen los links de todas las peliculas que recien se agregaron
-          // y se mandan a la api para actualizarse.
-          this.linksService.replaceAll(links_movies_list).subscribe({
-            next: (() => {
-              this.uploadingMovies = !this.uploadingMovies;
-              this.snackbar.open(response.message);
-            }),
-            error: ((linksError: HttpErrorResponse) => {
-              this.uploadingMovies = !this.uploadingMovies;
-              this.snackbar.open(`${linksError.message}`, '', {
-                duration: 3500, panelClass: ['error-snackbar']});
-            })
-          });
-        } else {
-          this.snackbar.open(`${response.message}`, '', {
-            duration: 3500, panelClass: ['error-snackbar']});
-          this.uploadingMovies = !this.uploadingMovies;
-        }
-      }),
-      error: ((error: HttpErrorResponse) => {
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      this.uploadingMovies = !this.uploadingMovies;
+      const movies = [];
+      this.moviesSelected.forEach( movieNode => {
+        const movie = new Movie();
+        movie.cast = movieNode.children[0].cast;
+        movie.creationDate = movieNode.children[0].modificationDate;
+        movie.genres = movieNode.children[0].genres;
+        movie.grade = 5;
+        movie.length = movieNode.children[0].length;
+        movie.originalName = movieNode.children[0].originalName;
+        movie.poster = movieNode.children[0].poster;
+        movie.synopsis = movieNode.children[0].synopsis;
+        movie.tags = movieNode.children[0].tags;
+        movie.name = movieNode.children[0].name;
+        movie.year = movieNode.children[0].year;
+        movie.modificationDate = movieNode.children[0].modificationDate;
+        movie.movieLinks = movieNode.children[0].movieLinks;
+        movies.push(movie);
+      });
+      // con operation_finished se tendra un control de las dos operaciones que se realizan a continuacion,
+      // se usa la propiedad de message para ir concatenando los errores en caso de haber, y el time_visible para
+      // agrandar el tiempo de vista para que se pueda leer todo el mensaje.
+
+      console.log(movies);
+      this.moviesService.saveAll(movies).subscribe( response => {
+        this.snackbar.open('Se agregaron las peliculas con exito.');
+        console.log(response);
+        this.uploadingMovies = !this.uploadingMovies;
+        this.moviesSelected.clear();
+        this.pendientRequest = false;
+      }, (error: HttpErrorResponse) => {
+        this.pendientRequest = false;
         this.snackbar.open(`${error.message}`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
         this.uploadingMovies = !this.uploadingMovies;
-      })
-    });
+      });
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+    }
   }
 
   /*
@@ -197,8 +188,10 @@ export class AddMovieComponent implements OnInit {
     las peliculas.
   */
   yearSelected() {
-    this.gettingMovies = !this.gettingMovies;
-    this.moviesService.getAllFromMovieServer(this.year_selected).subscribe({
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      this.gettingMovies = !this.gettingMovies;
+      this.moviesService.getAllFromMovieServer(this.year_selected).subscribe({
         next: (response => {
           if (response.status.includes('Success')) {
             this.TREE_DATA = [];
@@ -224,43 +217,58 @@ export class AddMovieComponent implements OnInit {
             });
             this.dataSource.data = this.TREE_DATA;
             this.moviesSelected.clear();
-            this.gettingMovies = !this.gettingMovies;
             this.snackbar.open(response.message);
           } else {
-            this.gettingMovies = !this.gettingMovies;
             this.snackbar.open(response.message, '', {
               duration: 3000, panelClass: ['error-snackbar']});
           }
+          this.pendientRequest = false;
+          this.gettingMovies = !this.gettingMovies;
         }),
         error: ((error: HttpErrorResponse) => {
+          this.pendientRequest = false;
           this.gettingMovies = !this.gettingMovies;
           this.snackbar.open(error.message, '', {
             duration: 3000, panelClass: ['error-snackbar']});
         })
-     });
+      });
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+    }
   }
 
   selectAll() {
-    let messageShown = false;
-    this.dataSource.data.forEach( node => {
-      this.moviesService.findIfAlreadyInDBWithNameAndYear(node.children[0].name, node.children[0].year).subscribe({
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      const movies: MovieUniqueCheck[] = [];
+      const moviesNodes = new Map<string, TreeNode>();
+      this.dataSource.data.forEach( node => {
+        movies.push(new MovieUniqueCheck(node.children[0].name, node.children[0].year));
+        moviesNodes.set(node.children[0].name, node);
+      });
+      console.log(movies);
+      this.moviesService.findIfAlreadyInDBWithNameAndYear(movies).subscribe({
         next: (response => {
-          if (response.status === 'Success') {
-            if (!messageShown) {
-              this.snackbar.open('Algunas peliculas ya estaban en la base de datos, si quieres sobrescribirlas eligelas manualmente.', '', {
-                duration: 3500, panelClass: ['error-snackbar']});
-              messageShown = !messageShown;
-            }
-          } else {
-            this.moviesSelected.set(this.treeNodeMap.get(node), node);
+          if (response.status === 'MoviesFound') {
+            this.snackbar.open(response.message, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
           }
+          response.responses.forEach( movie => {
+            if (movie.status === 'NewMovie') {
+              this.moviesSelected.set(this.treeNodeMap.get(moviesNodes.get(movie.name)), moviesNodes.get(movie.name));
+            }
+          });
           console.log(response);
+          this.pendientRequest = false;
         }),
         error: ((err: HttpErrorResponse) => {
+          this.pendientRequest = false;
           this.snackbar.open(`${err.message}`, '', {
             duration: 3500, panelClass: ['error-snackbar']});
         })
       });
-    });
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+    }
   }
 }

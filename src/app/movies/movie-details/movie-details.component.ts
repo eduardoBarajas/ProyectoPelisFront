@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Movie } from 'src/app/entities/Movie';
 import { MoviesService } from 'src/app/services/movies/movies.service';
 import { Route, RouterState, ActivatedRoute, Router, NavigationStart, NavigationEnd } from '@angular/router';
@@ -26,10 +26,12 @@ import { isUndefined } from 'util';
 })
 export class MovieDetailsComponent implements OnInit, OnDestroy {
 
+  @ViewChild('InteractionDivider', null) divider: ElementRef;
+
   sessionMovies: Movie[] = [];
   movie: Movie;
-  contentLoaded = false;
-  secondaryContentLoaded = false;
+  loadedContent = {movieLoaded: false, movieLinksLoaded: false, commentsLoaded: false, reviewsLoaded: false, similarMoviesLoaded: false,
+    movieNotationsLoaded: false};
   movieLinks = new Map<string, SafeResourceUrl>();
   movieLinksMap = new Map<string, MovieLinks>();
   movieLinksKeys = [];
@@ -38,7 +40,9 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
   review = new Review();
   comment = new Comment();
   commentSelected = new Comment();
+  commentAdded = false;
   reviewSelected = new Review();
+  reviewAdded = false;
   comments: Comment[] = [];
   reviews: Review[] = [];
   addedToWatchLaterList = false;
@@ -48,6 +52,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
   movieSubscription = new Subscription();
   movieNotationSubscription = new Subscription();
   routeSubscription = new Subscription();
+  pendientRequest = false;
 
   // recordatorio hacer una tabla en la base de datos para que esto no sea estatico.
   blockedSites = ['divload', 'mangoplay', 'stream78'];
@@ -63,9 +68,8 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.router.events.pipe(filter( e => e instanceof NavigationEnd)).subscribe( (event: NavigationEnd) => {
       // si la direccion despues del redireccionamiento es la raiz entonces no se ejecuta el componente de nuevo.
       if (event.urlAfterRedirects !== '/') {
-        this.contentLoaded = false;
-        this.secondaryContentLoaded = false;
-        console.log('khe puta berga');
+        this.loadedContent = {movieLoaded: false, movieLinksLoaded: false, commentsLoaded: false, reviewsLoaded: false,
+          similarMoviesLoaded: false, movieNotationsLoaded: false};
         this.initializeComponent();
       }
     });
@@ -93,23 +97,18 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
       sessionStorage.removeItem('currentMovieSelected');
       this.sessionMovies.push(this.movie);
       console.log('Metodo 1');
-      console.log(this.movie);
-      this.initMovieNotations();
+      setTimeout( () => { this.initMovieNotations(); }, 100);
     } else {
       if (this.sessionMovies.length > 0) {
-        console.log(location.href);
-        console.log(this.sessionMovies);
         const index = this.isInSessionMovies(+location.href.split('/')[4]);
         if (index === -1) {
           this.initMovieById(+location.href.split('/')[4]);
           console.log('estaba undefined');
         } else {
           this.movie = this.sessionMovies[index];
-          console.log('Entro aquiiiiiii');
-          console.log(this.movie);
-          this.initMovieNotations();
+          setTimeout( () => { this.initMovieNotations(); }, 100);
         }
-        console.log('Metodo w');
+        console.log('Metodo 2');
       } else {
         this.initMovieById(+location.href.split('/')[4]);
       }
@@ -124,7 +123,6 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
           this.sessionMovies.push(this.movie);
         }
         console.log('Metodo 3');
-        console.log(this.movie);
         this.initMovieNotations();
       } else {
         this.snackbar.open(movie['message'], '', {
@@ -138,91 +136,9 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  initSimiliarMovies() {
-    let genresSize = this.movie.genres.split(',').length - 1;
-    this.movieService.getAllByGenre(this.movie.genres.split(',').slice(0, genresSize)
-      [Math.floor(Math.random() * genresSize)]).subscribe( movies => {
-        if (movies['_embedded'] != null) {
-          movies['_embedded']['movieDTOList'].forEach( m => {
-            if (this.similarMovies.length < 6) {
-              if (m.idMovie !== this.movie.idMovie) {
-                if (this.isInSessionMovies(m.idMovie) === -1) {
-                  this.sessionMovies.push(m);
-                }
-                this.similarMovies.push(m);
-              }
-            }
-          });
-        }
-        this.secondaryContentLoaded = true;
-      }, (failed: HttpErrorResponse) => {
-        this.snackbar.open(failed.message, '', {
-          duration: 3500, panelClass: ['error-snackbar']
-        });
-        this.secondaryContentLoaded = true;
-    });
-  }
-
-  initComments() {
-    this.commentSevice.getAllByIdMovie(this.movie.idMovie).subscribe( comments => {
-      if (comments['_embedded'] != null) {
-        this.comments = comments['_embedded']['movieCommentDTOList'];
-      }
-      console.log(comments);
-      this.initReviews();
-    }, (failed: HttpErrorResponse) => {
-      this.snackbar.open(failed.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-      this.initReviews();
-    });
-  }
-
-  initReviews() {
-    this.reviewService.getAllByIdMovie(this.movie.idMovie).subscribe( reviews => {
-      if (reviews['_embedded']) {
-        this.reviews = reviews['_embedded']['movieReviewDTOList'];
-      }
-      console.log(reviews);
-      this.initSimiliarMovies();
-    }, (failed: HttpErrorResponse) => {
-      this.snackbar.open(failed.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-      this.initSimiliarMovies();
-    });
-  }
-
-  initMovieLinks() {
-    this.linkService.getFromMovie(this.movie.idMovie).subscribe( responseLinks => {
-      console.log(responseLinks);
-      if (responseLinks['_embedded'] != null) {
-        responseLinks['_embedded']['movieLinksDTOList'].forEach( movieLink => {
-          let block = false;
-          this.blockedSites.forEach( blocked => {
-            if (movieLink.link.includes(blocked)) {
-              block = true;
-            }
-          });
-          if (!block) {
-            this.movieLinks.set(movieLink.link, this.sanitazer.bypassSecurityTrustResourceUrl(movieLink.link));
-            this.movieLinksMap.set(movieLink.link, movieLink);
-            this.movieLinksKeys.push(movieLink.link);
-          }
-        });
-        if (this.movieLinks.size > 0) {
-          this.movieOptionSelected = this.movieLinksKeys[0];
-        }
-      }
-      this.contentLoaded = true;
-      this.initComments();
-    }, (err: HttpErrorResponse) => {
-      this.snackbar.open(err.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-      this.contentLoaded = true;
-      this.initComments();
-    });
-  }
-
   initMovieNotations() {
+    // cuando entra aqui la pelicula ya esta cargada
+    this.loadedContent.movieLoaded = true;
     // Si se tiene el id del usuario es que si tiene la sesion iniciada
     if (localStorage.getItem('id_user') !== 'undefined') {
       this.movieNotationSubscription = this.movieService.getMovieNotations(this.movie.idMovie, +localStorage.getItem('id_user'))
@@ -259,92 +175,255 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  reportLinkDown() {
-    if (this.movieOptionSelected) {
-      this.movieLinksMap.get(this.movieOptionSelected).active = 0;
-      this.linkService.update(this.movieLinksMap.get(this.movieOptionSelected)).subscribe( result => {
-        if (result['status'].includes('Success')) {
-          this.snackbar.open('Se notifico al sistema');
+  initMovieLinks() {
+    // cuando entre aqui las notaciones de la pelicula estaran terminadas
+    this.loadedContent.movieNotationsLoaded = true;
+    this.linkService.getFromMovie(this.movie.idMovie).subscribe( responseLinks => {
+      console.log(responseLinks);
+      if (responseLinks['_embedded'] != null) {
+        responseLinks['_embedded']['movieLinksDTOList'].forEach( movieLink => {
+          let block = false;
+          this.blockedSites.forEach( blocked => {
+            if (movieLink.link.includes(blocked)) {
+              block = true;
+            }
+          });
+          if (!block) {
+            this.movieLinks.set(movieLink.link, this.sanitazer.bypassSecurityTrustResourceUrl(movieLink.link));
+            this.movieLinksMap.set(movieLink.link, movieLink);
+            this.movieLinksKeys.push(movieLink.link);
+          }
+        });
+        if (this.movieLinks.size > 0) {
+          this.movieOptionSelected = this.movieLinksKeys[0];
         }
-        console.log(result);
-      });
-    } else {
-      this.snackbar.open('No se ha seleccionado niguna opcion.', '', {
+      }
+      this.initInteractions();
+    }, (err: HttpErrorResponse) => {
+      this.snackbar.open(err.message, '', {
         duration: 3500, panelClass: ['error-snackbar']});
+      this.initInteractions();
+    });
+  }
+
+  initInteractions() {
+    // cuando entra los links ya deben estar cargados
+    this.loadedContent.movieLinksLoaded = true;
+    this.movieService.getMovieInteractions(this.movie.idMovie).subscribe( interactions => {
+      this.comments = interactions['comments'];
+      this.reviews = interactions['reviews'];
+      console.log(interactions);
+      this.initSimiliarMovies();
+    }, (err: HttpErrorResponse) => {
+      this.snackbar.open(err.message, '', {
+        duration: 3500, panelClass: ['error-snackbar']});
+      this.initSimiliarMovies();
+    });
+    /*this.commentSevice.getAllByIdMovie(this.movie.idMovie).subscribe( comments => {
+      if (comments['_embedded'] != null) {
+        this.comments = comments['_embedded']['movieCommentDTOList'];
+      }
+      this.initReviews();
+    }, (failed: HttpErrorResponse) => {
+      this.snackbar.open(failed.message, '', {
+        duration: 3500, panelClass: ['error-snackbar']});
+      this.initReviews();
+    });*/
+  }
+
+  /*initReviews() {
+    // cuando entre los comentarios deben estar cargados
+    this.loadedContent.commentsLoaded = true;
+    this.reviewService.getAllByIdMovie(this.movie.idMovie).subscribe( reviews => {
+      if (reviews['_embedded']) {
+        this.reviews = reviews['_embedded']['movieReviewDTOList'];
+      }
+      this.initSimiliarMovies();
+    }, (failed: HttpErrorResponse) => {
+      this.snackbar.open(failed.message, '', {
+        duration: 3500, panelClass: ['error-snackbar']});
+      this.initSimiliarMovies();
+    });
+  }*/
+
+  initSimiliarMovies() {
+    // cuando entre los reviews deben estar cargados
+    this.loadedContent.commentsLoaded = true;
+    this.loadedContent.reviewsLoaded = true;
+    const genresSize = this.movie.genres.split(',').length - 1;
+    let genre = this.movie.genres.split(',').slice(0, genresSize)[Math.floor(Math.random() * genresSize)];
+    console.log('GENEROOOO');
+    console.log(genre);
+    if (genre === 'undefined') {
+      genre = this.movie.genres;
+    }
+    this.movieService.getMoviesFromGenreWithLimit(genre, 10).subscribe( movies => {
+      console.log('SIMILARES');
+      console.log(movies);
+      if (movies['_embedded'] != null) {
+        movies['_embedded']['movieDTOList'].forEach( m => {
+          if (this.similarMovies.length < 6) {
+            if (m.idMovie !== this.movie.idMovie) {
+              if (this.isInSessionMovies(m.idMovie) === -1) {
+                this.sessionMovies.push(m);
+              }
+              this.similarMovies.push(m);
+            }
+          }
+        });
+      }
+      this.loadedContent.similarMoviesLoaded = true;
+      console.log(this.reviews);
+    }, (failed: HttpErrorResponse) => {
+      this.snackbar.open(failed.message, '', {
+        duration: 3500, panelClass: ['error-snackbar']
+      });
+      this.loadedContent.similarMoviesLoaded = true;
+    });
+  }
+
+  reportLinkDown() {
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      if (this.movieOptionSelected) {
+        this.movieLinksMap.get(this.movieOptionSelected).active = 0;
+        this.linkService.update(this.movieLinksMap.get(this.movieOptionSelected)).subscribe( result => {
+          if (result['status'].includes('Success')) {
+            this.snackbar.open('Se notifico al sistema');
+          }
+          console.log(result);
+        }, (error: HttpErrorResponse) => {
+          this.pendientRequest = false;
+          this.snackbar.open(error.message, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
+        });
+      } else {
+        this.snackbar.open('No se ha seleccionado niguna opcion.', '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+      }
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
     }
   }
 
   publishReview() {
-    if (localStorage.getItem('id_user') != null) {
-      const date = new Date();
-      this.review.idMovie = this.movie.idMovie;
-      this.review.publishedDate = date.toLocaleDateString();
-      this.review.publishedTime = date.toTimeString().split(' ')[0].substring(0, 5);
-      this.review.idReview = 0;
-      this.review.idUser = +localStorage.getItem('id_user');
-      this.review.username = localStorage.getItem('nombre');
-      this.reviewService.save(this.review).subscribe( response => {
-        this.snackbar.open('Review Agregada.');
-        const newReview = new Review();
-        newReview.setReview(this.review);
-        newReview.idReview = response['idReview'];
-        this.reviews.push(newReview);
-        console.log(response);
-        this.review = new Review();
-      }, (error: HttpErrorResponse) => {
-          this.snackbar.open(error.message, '', {
+    if (!this.pendientRequest) {
+      if (localStorage.getItem('id_user') != null) {
+        if (this.review.reviewTitle.length > 1 && this.review.review.length > 1) {
+          this.pendientRequest = true;
+          const date = new Date();
+          this.review.idMovie = this.movie.idMovie;
+          this.review.publishedDate = date.toLocaleDateString();
+          this.review.publishedTime = date.toTimeString().split(' ')[0].substring(0, 5);
+          this.review.idReview = 0;
+          this.review.idUser = +localStorage.getItem('id_user');
+          this.review.username = localStorage.getItem('nombre');
+          this.reviewService.save(this.review).subscribe( response => {
+            this.snackbar.open('Review Agregada.');
+            const newReview = new Review();
+            newReview.setReview(this.review);
+            newReview.idReview = response['idReview'];
+            this.reviews.splice(0, 0, newReview);
+            this.reviews = this.reviews.splice(0, this.reviews.length);
+            console.log(response);
+            console.log(this.reviews);
+            this.review = new Review();
+            this.reviewAdded = true;
+            this.pendientRequest = false;
+            setTimeout( () => { this.reviewAdded = false; }, 1000);
+          }, (error: HttpErrorResponse) => {
+            this.pendientRequest = false;
+            this.snackbar.open(error.message, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
+          });
+        } else {
+          this.snackbar.open('Asegurate de llenar los campos.', '', {
             duration: 3500, panelClass: ['error-snackbar']});
-      });
+        }
+      } else {
+        this.snackbar.open('Inicia sesion para poder publicar una review.', '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+      }
     } else {
-      this.snackbar.open('Inicia sesion para poder publicar una review.', '', {
-        duration: 3500, panelClass: ['error-snackbar']});
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
     }
   }
 
   publishComment() {
-    if (localStorage.getItem('id_user') != null) {
-      const date = new Date();
-      this.comment.publishedTime = date.toTimeString().split(' ')[0].substring(0, 5);
-      this.comment.publishedDate = date.toLocaleDateString();
-      this.comment.idMovie = this.movie.idMovie;
-      this.comment.idUser = +localStorage.getItem('id_user');
-      this.comment.username = localStorage.getItem('nombre');
-      console.log(this.comment);
-      this.commentSevice.save(this.comment).subscribe( response => {
-        this.snackbar.open('Comentario Agregado.');
-        const newComment = new Comment();
-        newComment.setComment(this.comment);
-        newComment.idComment = response['idComment'];
-        this.comments.push(newComment);
-        this.comment = new Comment();
-      }, (error: HttpErrorResponse) => {
-        this.snackbar.open(error.message, '', {
+    if (!this.pendientRequest) {
+      if (localStorage.getItem('id_user') != null) {
+        if (this.comment.comment.length > 1) {
+          this.pendientRequest = true;
+          const date = new Date();
+          this.comment.publishedTime = date.toTimeString().split(' ')[0].substring(0, 5);
+          this.comment.publishedDate = date.toLocaleDateString();
+          this.comment.idMovie = this.movie.idMovie;
+          this.comment.idUser = +localStorage.getItem('id_user');
+          this.comment.username = localStorage.getItem('nombre');
+          console.log(this.comment);
+          this.commentSevice.save(this.comment).subscribe( response => {
+            this.snackbar.open('Comentario Agregado.');
+            const newComment = new Comment();
+            newComment.setComment(this.comment);
+            newComment.idComment = response['idComment'];
+            this.comments.splice(0, 0, newComment);
+            // se tiene que recrear la lista de comentarios para que el virtual list lo detecte y acutalice
+            this.comments = this.comments.splice(0, this.comments.length);
+            this.comment = new Comment();
+            this.commentAdded = true;
+            this.pendientRequest = false;
+            setTimeout( () => { this.commentAdded = false; }, 1000);
+          }, (error: HttpErrorResponse) => {
+            this.pendientRequest = false;
+            this.snackbar.open(error.message, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
+          });
+        } else {
+          this.snackbar.open('Asegurate de llenar el campo.', '', {
+            duration: 3500, panelClass: ['error-snackbar']});
+        }
+      } else {
+        this.snackbar.open('Inicia sesion para poder dejar un comentario.', '', {
           duration: 3500, panelClass: ['error-snackbar']});
-      });
+      }
     } else {
-      this.snackbar.open('Inicia sesion para poder dejar un comentario.', '', {
-        duration: 3500, panelClass: ['error-snackbar']});
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
     }
   }
 
   deleteComment(comment: Comment) {
-    this.commentSevice.deleteById(comment.idComment).subscribe( response => {
-      this.snackbar.open('Se elimino el comentario.');
-      this.comments.splice(this.comments.indexOf(comment), 1);
-    }, (error: HttpErrorResponse) => {
-      this.snackbar.open(error.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-    });
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      this.commentSevice.deleteById(comment.idComment).subscribe( response => {
+        this.snackbar.open('Se elimino el comentario.');
+        this.comments.splice(this.comments.indexOf(comment), 1);
+        this.comments = this.comments.splice(0, this.comments.length);
+        this.pendientRequest = false;
+      }, (error: HttpErrorResponse) => {
+        this.pendientRequest = false;
+        this.snackbar.open(error.message, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+      });
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+    }
   }
 
   editComment(comment: Comment) {
-    this.commentSevice.update(comment).subscribe( response => {
-      this.snackbar.open(response.message);
-      this.commentSelected = new Comment();
-    }, (error: HttpErrorResponse) => {
-      this.snackbar.open(error.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-    });
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      this.commentSevice.update(comment).subscribe( response => {
+        this.snackbar.open(response.message);
+        this.pendientRequest = false;
+        this.commentSelected = new Comment();
+      }, (error: HttpErrorResponse) => {
+        this.pendientRequest = false;
+        this.snackbar.open(error.message, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+      });
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+    }
   }
 
   checkCommentAuth(comment: Comment) {
@@ -362,24 +441,38 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteReview(review: Review) {
-    this.reviewService.deleteById(review.idReview).subscribe( response => {
-      this.snackbar.open('Se elimino el review.');
-      this.reviews.splice(this.reviews.indexOf(review), 1);
-    }, (error: HttpErrorResponse) => {
-      this.snackbar.open(error.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-    });
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      this.reviewService.deleteById(review.idReview).subscribe( response => {
+        this.snackbar.open('Se elimino el review.');
+        this.reviews.splice(this.reviews.indexOf(review), 1);
+        this.pendientRequest = false;
+      }, (error: HttpErrorResponse) => {
+        this.pendientRequest = false;
+        this.snackbar.open(error.message, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+      });
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+    }
   }
 
   editReview(review: Review) {
-    console.log(review);
-    this.reviewService.update(review).subscribe( response => {
-      this.snackbar.open(response.message);
-      this.reviewSelected = new Review();
-    }, (error: HttpErrorResponse) => {
-      this.snackbar.open(error.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-    });
+    if (!this.pendientRequest) {
+      this.pendientRequest = true;
+      console.log(review);
+      this.reviewService.update(review).subscribe( response => {
+        this.snackbar.open(response.message);
+        this.pendientRequest = false;
+        this.reviewSelected = new Review();
+      }, (error: HttpErrorResponse) => {
+        this.pendientRequest = false;
+        this.snackbar.open(error.message, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+      });
+    } else {
+      this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+    }
   }
 
   checkReviewAuth(review: Review) {

@@ -7,6 +7,10 @@ export class Comment {
     idMovie: number;
     username: string;
 
+    constructor() {
+        this.comment = '';
+    }
+
     setComment(comment: Comment) {
         this.idComment = comment.idComment;
         this.comment = comment.comment;
