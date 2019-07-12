@@ -43,8 +43,7 @@ export class EditMovieComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.moviesService.getAll().subscribe( {
-      next: (movies => {
+    this.moviesService.getAll().subscribe( movies => {
         // checar esta comparacion, no sirve bien
         if (movies['_embedded'] != null) {
           this.dataSource = new MatTableDataSource(movies['_embedded']['movieDTOList']);
@@ -54,12 +53,10 @@ export class EditMovieComponent implements OnInit {
           this.snackbar.open(`No hay peliculas almacenadas en el sistema.`, '', {
             duration: 3500, panelClass: ['error-snackbar']});
         }
-      }),
-      error: ((error: HttpErrorResponse) => {
-        this.snackbar.open(`${error.message}`, '', {
+      }, (error: HttpErrorResponse) => {
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
-      })
-    });
+      });
   }
 
   deleteMovie(mov: IMovie) {
@@ -89,6 +86,9 @@ export class EditMovieComponent implements OnInit {
           this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
         }
       }
+    }, (error: HttpErrorResponse) => {
+      this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+        duration: 3500, panelClass: ['error-snackbar']});
     });
   }
 
@@ -119,7 +119,7 @@ export class EditMovieComponent implements OnInit {
               this.pendientRequest = false;
             }), error: ((err: HttpErrorResponse) => {
               this.pendientRequest = false;
-              this.snackbar.open(`${err.message}`, '', {
+              this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
                 duration: 3500, panelClass: ['error-snackbar']});
             })
           });

@@ -13,6 +13,8 @@
             [ngClass]="{'linkSelected': activeLink == link}">{{link}} <mat-icon class="mx-2">{{linksIcons.get(link)}}</mat-icon>
           <mat-divider></mat-divider>
         </a>
+        <button *ngIf="!(isHandset$ | async) && !loginBtnVisible && !inAuthScreen" class="ml-5" mat-raised-button (click)="logOut()" style="background-color: tomato; color: white;">Cerrar Session</button>
+        <button *ngIf="!(isHandset$ | async) && loginBtnVisible && !inAuthScreen" class="ml-5" mat-raised-button routerLink="/login" style="background-color: #4CAF50; color: white;">Iniciar Session</button>
       </mat-nav-list>
     </mat-sidenav>
     <!-- Se usa el overflow: hidden para que se oculte la diferencia de tamanios-->
@@ -29,38 +31,14 @@
         <span>
           <a [routerLink]="['/']" routerLinkActive="router-link-active" >PeliculasDex</a>
         </span>
-        <!--
-        <span>
-          <img class="my-1" style="width:9vw;height:9vh;" src="/assets/Images/Logo.png" *ngIf="!(isHandset$ | async)">
-          <img class="my-1" style="width:32vw;height:9vh;margin-left:50%;" src="/assets/Images/Logo.png" *ngIf="isHandset$ | async">
-        </span>
-       
-        <nav *ngIf="!(isHandset$ | async)" mat-tab-nav-bar [backgroundColor]="background" layout-fill class="mx-4">
-          <a style="font-size:1.2rem;padding: 0 12px;min-width: 75px;" mat-tab-link *ngFor="let link of links"
-            [routerLink]="link"
-            (click)="activeLink = link"
-            [active]="activeLink == link"> {{link.split('/')[0]}} </a>
-          <button class="ml-5 my-2" mat-raised-button routerLink="/Login" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && !sesion_initiated">Iniciar Sesion</button>
-          <button class="ml-5 my-2" mat-raised-button (click)="cerrarSesion()" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && sesion_initiated">Cerrar Sesion</button>
-          
-        </nav>
-        -->
-        
         <nav *ngIf="!(isHandset$ | async)" mat-tab-nav-bar [color]="primary" [backgroundColor]="background" layout-fill class="mx-4">
           <a mat-tab-link *ngFor="let link of links"
           [routerLink]="linksMap.get(link)"
           (click)="activeLink = link"
           [ngClass]="{'linkSelected': activeLink === link}"> {{link}} <mat-icon class="mx-2">{{linksIcons.get(link)}}</mat-icon></a>
         </nav>
-        <button *ngIf="!(isHandset$ | async) && !loginBtn && !inAuthScreen" class="ml-5" mat-raised-button (click)="logOut()" style="background-color: tomato; color: white;">Cerrar Session</button>
-        <button *ngIf="!(isHandset$ | async) && loginBtn && !inAuthScreen" class="ml-5" mat-raised-button routerLink="/login" style="background-color: #4CAF50; color: white;">Iniciar Session</button>
-        <!--
-        <button *ngIf="adminLinks" class="mx-5" mat-raised-button routerLink="/add" color="primary">Agregar Peliculas</button>
-        <button *ngIf="adminLinks" class="ml-5" mat-raised-button routerLink="/edit" color="primary">Editar Peliculas</button>
-        <button class="ml-5" mat-raised-button routerLink="/catalog" color="primary">Catalogo</button>
-        <button *ngIf="!loginBtn" class="ml-5" mat-raised-button (click)="logOut()" color="accent">Cerrar Session</button>
-        <button *ngIf="loginBtn" class="ml-5" mat-raised-button routerLink="/login" color="accent">Iniciar Session</button>
-        -->
+        <button *ngIf="!(isHandset$ | async) && !loginBtnVisible && !inAuthScreen" class="ml-5" mat-raised-button (click)="logOut()" style="background-color: tomato; color: white;">Cerrar Session</button>
+        <button *ngIf="!(isHandset$ | async) && loginBtnVisible && !inAuthScreen" class="ml-5" mat-raised-button routerLink="/login" style="background-color: #4CAF50; color: white;">Iniciar Session</button>
       </mat-toolbar>
       <!-- Add Content Here -->
       <div [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''" style="margin-top: 5vh;">

@@ -50,8 +50,15 @@ export class HomeMoviesComponent implements OnInit  {
           duration: 3500, panelClass: ['error-snackbar']});
       }
     }, (err: HttpErrorResponse) => {
-      this.snackbar.open(`${err.message}`, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
+      console.log(err);
+      if (err.statusText === 'Unknown Error') {
+        this.snackbar.open(`Ocurrio un error con la conexion al servidor.`, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+        this.router.navigate(['error']);
+      } else {
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+          duration: 3500, panelClass: ['error-snackbar']});
+      }
     });
   }
 
@@ -123,6 +130,9 @@ export class HomeMoviesComponent implements OnInit  {
             this.snackbar.open(`No se obtuvieron los estrenos`, '', {
               duration: 3500, panelClass: ['error-snackbar']});
           }
+        }, (err: HttpErrorResponse) => {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         });
         break;
       }
@@ -135,6 +145,9 @@ export class HomeMoviesComponent implements OnInit  {
             this.snackbar.open(`No se obtuvieron los estrenos`, '', {
               duration: 3500, panelClass: ['error-snackbar']});
           }
+        }, (err: HttpErrorResponse) => {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         });
         break;
       }
@@ -156,6 +169,9 @@ export class HomeMoviesComponent implements OnInit  {
                 duration: 3500, panelClass: ['error-snackbar']});
             }
             console.log(response);
+          }, (err: HttpErrorResponse) => {
+            this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
           });
         } else {
           this.snackbar.open(`Para ver tus peliculas favoritas por favor inicia sesion.`, '', {
@@ -181,6 +197,9 @@ export class HomeMoviesComponent implements OnInit  {
                 duration: 3500, panelClass: ['error-snackbar']});
             }
             console.log(response);
+          }, (err: HttpErrorResponse) => {
+            this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
           });
         } else {
           this.snackbar.open(`Para ver tus peliculas favoritas por favor inicia sesion.`, '', {

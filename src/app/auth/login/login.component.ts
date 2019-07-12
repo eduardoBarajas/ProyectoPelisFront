@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   recoverPassword() {
-    console.log('xd');
+    this.snackbar.open('Funcion no disponible actualmente.', '', {panelClass: ['error-snackbar']});
   }
 
 }

@@ -130,7 +130,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
       }
       this.movieSubscription.unsubscribe();
     }, (error: HttpErrorResponse) => {
-        this.snackbar.open(error.message, '', {
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
         this.movieSubscription.unsubscribe();
     });
@@ -162,6 +162,9 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
               this.watchLaterLabel = 'Quitar De Lista';
             }
           }
+        }, (error: HttpErrorResponse) => {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         });
         this.movieNotationSubscription.unsubscribe();
         // inicializar las peliculas similares
@@ -193,6 +196,9 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
             this.movieLinksMap.set(movieLink.link, movieLink);
             this.movieLinksKeys.push(movieLink.link);
           }
+        }, (err: HttpErrorResponse) => {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         });
         if (this.movieLinks.size > 0) {
           this.movieOptionSelected = this.movieLinksKeys[0];
@@ -200,7 +206,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
       }
       this.initInteractions();
     }, (err: HttpErrorResponse) => {
-      this.snackbar.open(err.message, '', {
+      this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
       this.initInteractions();
     });
@@ -215,36 +221,11 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
       console.log(interactions);
       this.initSimiliarMovies();
     }, (err: HttpErrorResponse) => {
-      this.snackbar.open(err.message, '', {
+      this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
       this.initSimiliarMovies();
     });
-    /*this.commentSevice.getAllByIdMovie(this.movie.idMovie).subscribe( comments => {
-      if (comments['_embedded'] != null) {
-        this.comments = comments['_embedded']['movieCommentDTOList'];
-      }
-      this.initReviews();
-    }, (failed: HttpErrorResponse) => {
-      this.snackbar.open(failed.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-      this.initReviews();
-    });*/
   }
-
-  /*initReviews() {
-    // cuando entre los comentarios deben estar cargados
-    this.loadedContent.commentsLoaded = true;
-    this.reviewService.getAllByIdMovie(this.movie.idMovie).subscribe( reviews => {
-      if (reviews['_embedded']) {
-        this.reviews = reviews['_embedded']['movieReviewDTOList'];
-      }
-      this.initSimiliarMovies();
-    }, (failed: HttpErrorResponse) => {
-      this.snackbar.open(failed.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']});
-      this.initSimiliarMovies();
-    });
-  }*/
 
   initSimiliarMovies() {
     // cuando entre los reviews deben estar cargados
@@ -275,9 +256,8 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
       this.loadedContent.similarMoviesLoaded = true;
       console.log(this.reviews);
     }, (failed: HttpErrorResponse) => {
-      this.snackbar.open(failed.message, '', {
-        duration: 3500, panelClass: ['error-snackbar']
-      });
+      this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+        duration: 3500, panelClass: ['error-snackbar']});
       this.loadedContent.similarMoviesLoaded = true;
     });
   }
@@ -294,7 +274,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
           console.log(result);
         }, (error: HttpErrorResponse) => {
           this.pendientRequest = false;
-          this.snackbar.open(error.message, '', {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
             duration: 3500, panelClass: ['error-snackbar']});
         });
       } else {
@@ -333,7 +313,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
             setTimeout( () => { this.reviewAdded = false; }, 1000);
           }, (error: HttpErrorResponse) => {
             this.pendientRequest = false;
-            this.snackbar.open(error.message, '', {
+            this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
               duration: 3500, panelClass: ['error-snackbar']});
           });
         } else {
@@ -375,7 +355,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
             setTimeout( () => { this.commentAdded = false; }, 1000);
           }, (error: HttpErrorResponse) => {
             this.pendientRequest = false;
-            this.snackbar.open(error.message, '', {
+            this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
               duration: 3500, panelClass: ['error-snackbar']});
           });
         } else {
@@ -401,7 +381,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
         this.pendientRequest = false;
       }, (error: HttpErrorResponse) => {
         this.pendientRequest = false;
-        this.snackbar.open(error.message, '', {
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
       });
     } else {
@@ -418,7 +398,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
         this.commentSelected = new Comment();
       }, (error: HttpErrorResponse) => {
         this.pendientRequest = false;
-        this.snackbar.open(error.message, '', {
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
       });
     } else {
@@ -449,7 +429,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
         this.pendientRequest = false;
       }, (error: HttpErrorResponse) => {
         this.pendientRequest = false;
-        this.snackbar.open(error.message, '', {
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
       });
     } else {
@@ -467,7 +447,7 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
         this.reviewSelected = new Review();
       }, (error: HttpErrorResponse) => {
         this.pendientRequest = false;
-        this.snackbar.open(error.message, '', {
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
           duration: 3500, panelClass: ['error-snackbar']});
       });
     } else {
@@ -499,6 +479,9 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
             this.addedToFavoritesList = false;
             this.snackbar.open('Se elimino de la lista de favoritos.');
           }
+        }, (error: HttpErrorResponse) => {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         });
       } else {
         const fav = new Favorite();
@@ -527,6 +510,9 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
             this.addedToWatchLaterList = false;
             this.snackbar.open('Se elimino de la lista de para ver mas tarde.');
           }
+        }, (error: HttpErrorResponse) => {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         });
       } else {
         const later = new WatchLater();
@@ -537,6 +523,9 @@ export class MovieDetailsComponent implements OnInit, OnDestroy {
           this.addedToWatchLaterList = true;
           this.watchLaterLabel = 'Quitar De Lista';
           this.snackbar.open('Se agrego a la lista para ver mas tarde.');
+        }, (error: HttpErrorResponse) => {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         });
       }
     } else {

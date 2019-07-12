@@ -106,9 +106,9 @@ export class CatalogComponent implements OnInit {
               duration: 3500, panelClass: ['error-snackbar']});
           }
         }, (error: HttpErrorResponse) => {
-          this.snackbar.open(error.message, '', {
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
             duration: 3500, panelClass: ['error-snackbar']});
-      });
+        });
     }
   }
 
@@ -167,7 +167,7 @@ export class CatalogComponent implements OnInit {
           duration: 3500, panelClass: ['error-snackbar']});
       }
     }, (error: HttpErrorResponse) => {
-      this.snackbar.open(`${error.message}`, '', {
+      this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
     });
   }

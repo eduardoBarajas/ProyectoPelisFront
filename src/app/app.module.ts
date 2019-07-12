@@ -24,13 +24,15 @@ import { HttpConfigInterceptor } from './Interceptors/httpconfig.interceptor';
 import { LinksDialogComponent } from './dialogs/links-dialog/links-dialog.component';
 import { MatPaginatorIntlMX } from './helpers/MatPaginatorIntlMX';
 import {MatTabsModule} from '@angular/material/tabs';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponentComponent,
     MovieDialogComponent,
-    LinksDialogComponent
+    LinksDialogComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

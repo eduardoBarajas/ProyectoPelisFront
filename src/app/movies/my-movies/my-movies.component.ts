@@ -4,8 +4,6 @@ import { Movie } from 'src/app/entities/Movie';
 import { MoviesService } from 'src/app/services/movies/movies.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { FavoritesService } from 'src/app/services/favorites/favorites.service';
-import { WatchLaterService } from 'src/app/services/watch_later/watch-later.service';
 
 @Component({
   selector: 'app-my-movies',
@@ -77,7 +75,7 @@ export class MyMoviesComponent implements OnInit {
         this.snackbar.open('No tienes peliculas agregadas a tus favoritos.', '', {duration: 3500, panelClass: ['error-snackbar']});
       }
     }, (error: HttpErrorResponse) => {
-      this.snackbar.open(error.message, '', {
+      this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
     });
   }
@@ -99,7 +97,7 @@ export class MyMoviesComponent implements OnInit {
         { duration: 3500, panelClass: ['error-snackbar']});
       }
     }, (error: HttpErrorResponse) => {
-      this.snackbar.open(error.message, '', {
+      this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
     });
   }

@@ -122,7 +122,7 @@ export class AddMovieComponent implements OnInit {
           }),
           error: ((err: HttpErrorResponse) => {
             this.pendientRequest = false;
-            this.snackbar.open(`${err.message}`, '', {
+            this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
               duration: 3500, panelClass: ['error-snackbar']});
           })
         });
@@ -173,8 +173,8 @@ export class AddMovieComponent implements OnInit {
         this.pendientRequest = false;
       }, (error: HttpErrorResponse) => {
         this.pendientRequest = false;
-        this.snackbar.open(`${error.message}`, '', {
-          duration: 3500, panelClass: ['error-snackbar']});
+        this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+            duration: 3500, panelClass: ['error-snackbar']});
         this.uploadingMovies = !this.uploadingMovies;
       });
     } else {
@@ -228,8 +228,8 @@ export class AddMovieComponent implements OnInit {
         error: ((error: HttpErrorResponse) => {
           this.pendientRequest = false;
           this.gettingMovies = !this.gettingMovies;
-          this.snackbar.open(error.message, '', {
-            duration: 3000, panelClass: ['error-snackbar']});
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
         })
       });
     } else {
@@ -263,8 +263,8 @@ export class AddMovieComponent implements OnInit {
         }),
         error: ((err: HttpErrorResponse) => {
           this.pendientRequest = false;
-          this.snackbar.open(`${err.message}`, '', {
-            duration: 3500, panelClass: ['error-snackbar']});
+          this.snackbar.open(`Ocurrio un problema con la conexion por favor intenta de nuevo.`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
         })
       });
     } else {

@@ -41,7 +41,7 @@ import { MatSnackBar } from '@angular/material';
 })
 export class NavigationComponentComponent implements OnInit {
 
-  loginBtn = true;
+  loginBtnVisible = true;
   activeLink = 'Inicio';
   linksMap = new Map<string, string>();
   linksIcons = new Map<string, string>();
@@ -69,10 +69,10 @@ export class NavigationComponentComponent implements OnInit {
         } else {
           this.links = this.userLinks;
         }
-        this.loginBtn = false;
+        this.loginBtnVisible = false;
       } else {
         this.links = this.userLinks;
-        this.loginBtn = true;
+        this.loginBtnVisible = true;
       }
       if (location.href.split('/')[3].includes('login') || location.href.split('/')[3].includes('signup')) {
         this.inAuthScreen = true;
@@ -108,7 +108,7 @@ export class NavigationComponentComponent implements OnInit {
   logOut() {
     this.authService.logOut();
     this.links = this.userLinks;
-    this.loginBtn = true;
+    this.loginBtnVisible = true;
     this.activeLink = this.userLinks[0];
     this.snackbar.open('Se cerro la session');
     this.route.navigate(['/']);

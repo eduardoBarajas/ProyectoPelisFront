@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MovieLinks } from 'src/app/entities/MovieLinks';
-import { assignMovieLinks } from 'src/app/helpers/MovieLinksMapper';
 import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { LinksService } from 'src/app/services/links/links.service';
 import { HttpErrorResponse } from '@angular/common/http';
