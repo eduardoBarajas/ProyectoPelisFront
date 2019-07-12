@@ -21,10 +21,46 @@ a {
 .opcionSeleccionada {
   color: rgba(255, 255, 0, 0.842);
 }
+
   
   /*Para que el menu este fijo*/
   .fixed-toolbar {
     position:fixed;
     z-index:999;
     max-height: 10vh;
+  }
+
+  .linkSelected {
+    font-size: 1.3rem;
+    opacity: 1;
+  }
+
+  .icon {
+    animation-name: icon-in-anim;
+    animation-duration: 1s;
+    animation-timing-function: ease;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+  }
+  
+  @keyframes link-in-anim {
+    0%   {
+    font-size: 1rem;
+    /*color: whitesmoke;*/
+    }
+    100%   {
+    font-size: 1.3rem;
+    /*color: rgba(0, 0, 0, 0.7);*/
+    }
+  }
+  
+  @keyframes icon-in-anim {
+    0%   {
+      color: whitesmoke;
+    }
+    100%   {
+      color: deepskyblue;
+    }
   }

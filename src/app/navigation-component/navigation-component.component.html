@@ -7,14 +7,12 @@
         Menu
       </mat-toolbar>
       <mat-nav-list>
-        <!--
-        <a mat-list-item (click)="drawer.toggle()" *ngFor="let link of links"
-            [routerLink]="link"
+        <a class="opcion" mat-list-item (click)="drawer.toggle()" *ngFor="let link of links"
+            [routerLink]="linksMap.get(link)"
             (click)="activeLink = link"
-            [routerLinkActive]="'opcionSeleccionada'"> {{link.split('/')[0]}} </a>
-        <button class="mx-2 my-2" mat-raised-button (click)="drawer.toggle()" routerLink="/Login" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && !sesion_initiated">Iniciar Sesion</button>
-        <button class="mx-2 my-2" mat-raised-button (click)="cerrarSesion()" style="background-color: #4CAF50;color: white;" *ngIf="!hide_login_button && sesion_initiated">Cerrar Sesion</button>
-        -->
+            [ngClass]="{'linkSelected': activeLink == link}">{{link}} <mat-icon class="mx-2">{{linksIcons.get(link)}}</mat-icon>
+          <mat-divider></mat-divider>
+        </a>
       </mat-nav-list>
     </mat-sidenav>
     <!-- Se usa el overflow: hidden para que se oculte la diferencia de tamanios-->
@@ -47,11 +45,22 @@
           
         </nav>
         -->
+        
+        <nav *ngIf="!(isHandset$ | async)" mat-tab-nav-bar [color]="primary" [backgroundColor]="background" layout-fill class="mx-4">
+          <a mat-tab-link *ngFor="let link of links"
+          [routerLink]="linksMap.get(link)"
+          (click)="activeLink = link"
+          [ngClass]="{'linkSelected': activeLink === link}"> {{link}} <mat-icon class="mx-2">{{linksIcons.get(link)}}</mat-icon></a>
+        </nav>
+        <button *ngIf="!(isHandset$ | async) && !loginBtn && !inAuthScreen" class="ml-5" mat-raised-button (click)="logOut()" style="background-color: tomato; color: white;">Cerrar Session</button>
+        <button *ngIf="!(isHandset$ | async) && loginBtn && !inAuthScreen" class="ml-5" mat-raised-button routerLink="/login" style="background-color: #4CAF50; color: white;">Iniciar Session</button>
+        <!--
         <button *ngIf="adminLinks" class="mx-5" mat-raised-button routerLink="/add" color="primary">Agregar Peliculas</button>
         <button *ngIf="adminLinks" class="ml-5" mat-raised-button routerLink="/edit" color="primary">Editar Peliculas</button>
         <button class="ml-5" mat-raised-button routerLink="/catalog" color="primary">Catalogo</button>
         <button *ngIf="!loginBtn" class="ml-5" mat-raised-button (click)="logOut()" color="accent">Cerrar Session</button>
         <button *ngIf="loginBtn" class="ml-5" mat-raised-button routerLink="/login" color="accent">Iniciar Session</button>
+        -->
       </mat-toolbar>
       <!-- Add Content Here -->
       <div [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''" style="margin-top: 5vh;">

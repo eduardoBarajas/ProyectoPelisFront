@@ -23,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
 import { HttpConfigInterceptor } from './Interceptors/httpconfig.interceptor';
 import { LinksDialogComponent } from './dialogs/links-dialog/links-dialog.component';
 import { MatPaginatorIntlMX } from './helpers/MatPaginatorIntlMX';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { MatPaginatorIntlMX } from './helpers/MatPaginatorIntlMX';
     MatSnackBarModule,
     MatFormFieldModule,
     MatSidenavModule,
+    MatTabsModule,
     MatToolbarModule,
     MatDialogModule,
     MatListModule,

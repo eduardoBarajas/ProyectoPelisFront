@@ -41,8 +41,15 @@ import { MatSnackBar } from '@angular/material';
 })
 export class NavigationComponentComponent implements OnInit {
 
-  adminLinks = false;
   loginBtn = true;
+  activeLink = 'Inicio';
+  linksMap = new Map<string, string>();
+  linksIcons = new Map<string, string>();
+  links = [];
+  firstRun = true;
+  inAuthScreen = false;
+  userLinks = ['Inicio', 'Catalogo'];
+  adminLinks = ['Inicio', 'Agregar Peliculas', 'Editar Peliculas', 'Catalogo', 'Mis Peliculas'];
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -50,7 +57,7 @@ export class NavigationComponentComponent implements OnInit {
     );
 
   constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private route: Router,
-    private snackbar: MatSnackBar) {}
+              private snackbar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.route.events.pipe(
@@ -58,22 +65,53 @@ export class NavigationComponentComponent implements OnInit {
     ).subscribe( () => {
       if (this.authService.checkIfTokenIsValid()) {
         if (localStorage.getItem('authority').includes('1')) {
-          this.adminLinks = true;
+          this.links = this.adminLinks;
         } else {
-          this.adminLinks = false;
+          this.links = this.userLinks;
         }
         this.loginBtn = false;
       } else {
+        this.links = this.userLinks;
         this.loginBtn = true;
+      }
+      if (location.href.split('/')[3].includes('login') || location.href.split('/')[3].includes('signup')) {
+        this.inAuthScreen = true;
+        this.activeLink = '';
+      } else {
+        this.inAuthScreen = false;
+        if (this.activeLink === '') {
+          this.activeLink = 'Inicio';
+        }
+      }
+      this.setLinksMap();
+    });
+  }
+
+  setLinksMap() {
+    this.links.forEach( link => {
+      switch (link) {
+        case 'Inicio': { this.linksMap.set(link, '/'); this.linksIcons.set(link, 'home'); break; }
+        case 'Agregar Peliculas': { this.linksMap.set(link, '/add'); this.linksIcons.set(link, 'add'); break; }
+        case 'Editar Peliculas': { this.linksMap.set(link, '/edit'); this.linksIcons.set(link, 'edit'); break; }
+        case 'Catalogo': { this.linksMap.set(link, '/catalog'); this.linksIcons.set(link, 'movie'); break; }
+        case 'Mis Peliculas': { this.linksMap.set(link, '/my-movies'); this.linksIcons.set(link, 'playlist_play'); break; }
+      }
+      if (this.firstRun) {
+        if (this.linksMap.get(link) === `/${location.href.split('/')[3]}`) {
+            this.activeLink = link;
+            this.firstRun = false;
+        }
       }
     });
   }
 
   logOut() {
     this.authService.logOut();
-    this.adminLinks = false;
+    this.links = this.userLinks;
     this.loginBtn = true;
+    this.activeLink = this.userLinks[0];
     this.snackbar.open('Se cerro la session');
     this.route.navigate(['/']);
   }
+
 }
