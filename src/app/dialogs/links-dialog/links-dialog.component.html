@@ -8,7 +8,7 @@
           <input [(ngModel)]="link.link" matInput placeholder="http://sitio.de.la.pelicula.com/">
         </mat-form-field>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 my-2">
         <button mat-flat-button color="warn" (click)="clickDeleteLink(link)">Eliminar</button>
       </div>
     </div>
@@ -19,14 +19,17 @@
           <input [(ngModel)]="link.link" matInput placeholder="http://sitio.de.la.pelicula.com/">
         </mat-form-field>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 my-2">
         <button mat-flat-button color="warn" (click)="clickDeleteLink(link)">Eliminar</button>
       </div>
     </div>
     <div class="row my-2">
       <div class="col-md-4 mx-auto">
-        <button mat-flat-button color="warn" (click)="clickAddLink()">Agregar</button>
+        <button mat-flat-button style="background-color: #303f9f" (click)="clickAddLink()">Agregar Link</button>
       </div>
+      <div class="col-md-4 mx-auto">
+        <button mat-flat-button style="background-color: #303f9f" (click)="clickAddServerLinks()">Agregar Links Servidor</button>
+      </div>  
     </div>
   </div>
 </mat-dialog-content>

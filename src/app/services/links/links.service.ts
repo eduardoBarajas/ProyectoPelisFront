@@ -25,6 +25,11 @@ export class LinksService {
     return this.httpClient.post(`${environment.apiUrl}admin/links/movies/replaceAll`, links, this.httpOptions);
   }
 
+  getAllLinksFromMovieServer(name: string, year: number) {
+    // return this.httpClient.get<IServerMovieList>(`${environment.serverUrl}movies/${year}`);
+    return this.httpClient.get(`https://movies-server.herokuapp.com/movies/links/name/${name}/year/${year}`);
+  }
+
   getFromMovie(idMovie: number) {
     return this.httpClient.get(`${environment.apiUrl}links/movie/${idMovie}`);
   }
