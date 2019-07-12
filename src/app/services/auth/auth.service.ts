@@ -51,6 +51,7 @@ export class AuthService {
 
   logOut() {
     localStorage.clear();
+    sessionStorage.clear();
     this.isLogged.next(false);
   }
 

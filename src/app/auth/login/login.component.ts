@@ -13,6 +13,7 @@ import { Input } from '@angular/compiler/src/core';
 })
 export class LoginComponent implements OnInit, AfterViewInit {
   // @ViewChild('usernameInput', null) usernameInput: ElementRef;
+  pendientRequest = false;
 
   username: FormControl = new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z0-9_-]{3,15}$')]);
   pass: FormControl = new FormControl(null, [Validators.required, Validators.minLength(1), Validators.maxLength(25)]);
@@ -29,26 +30,33 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   login() {
     if (this.isDataValid()) {
-      this.authService.login(this.username.value, this.pass.value).subscribe( response => {
-        console.log(response);
-        localStorage.setItem('id_user', response['user']['id'].toString());
-        localStorage.setItem('token', response['token']);
-        localStorage.setItem('nombre', response['user']['name']);
-        localStorage.setItem('expiration', response['expiration']);
-        localStorage.setItem('authority', response['user']['authority']);
-        this.router.navigate(['/']).then( e => {
-          this.snackbar.open('Bienvenido ' + localStorage.getItem('nombre'));
+      if (!this.pendientRequest) {
+        this.pendientRequest = true;
+        this.authService.login(this.username.value, this.pass.value).subscribe( response => {
+          console.log(response);
+          localStorage.setItem('id_user', response['user']['id'].toString());
+          localStorage.setItem('token', response['token']);
+          localStorage.setItem('nombre', response['user']['name']);
+          localStorage.setItem('expiration', response['expiration']);
+          localStorage.setItem('authority', response['user']['authority']);
+          this.pendientRequest = false;
+          this.router.navigate(['/']).then( e => {
+            this.snackbar.open('Bienvenido ' + localStorage.getItem('nombre'));
+          });
+        }, (error: HttpErrorResponse) => {
+          console.log(error);
+          this.pendientRequest = false;
+          if (error.status === 401) {
+            this.snackbar.open(`Login Incorrecto`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
+          } else {
+            this.snackbar.open(`${error.message}`, '', {
+              duration: 3500, panelClass: ['error-snackbar']});
+          }
         });
-      }, (error: HttpErrorResponse) => {
-        console.log(error);
-        if (error.status === 401) {
-          this.snackbar.open(`Login Incorrecto`, '', {
-            duration: 3500, panelClass: ['error-snackbar']});
-        } else {
-          this.snackbar.open(`${error.message}`, '', {
-            duration: 3500, panelClass: ['error-snackbar']});
-        }
-      });
+      } else {
+        this.snackbar.open('Otra operacion esta siendo procesada por favor espera a que termine.');
+      }
     } else {
       this.snackbar.open(`Hubo un problema con los datos ingresados.`, '', {
         duration: 3500, panelClass: ['error-snackbar']});
